@@ -20,7 +20,7 @@ function streamAsyncIterator(reader: ReadableStreamDefaultReader<Uint8Array>) {
   };
 }
 
-export async function assistantResponseAcion() {
+export async function assistantResponseAcion(callback: (chunk: string) => void) {
   // export async function assistantResponseAcion(setMessages: Dispatch<SetStateAction<string>>) {
 
   const result = await fetch("http://127.0.0.1:11434/api/chat", {
@@ -44,6 +44,7 @@ export async function assistantResponseAcion() {
     const { message: { content } } = JSON.parse(value);
     assistantResponse += content;
     // setMessages(assistantResponse);
+    callback(assistantResponse);
     console.log(content);
   }
 
