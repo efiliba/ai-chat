@@ -1,38 +1,35 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { assistantResponseAcion } from "@/server/assistantResponseAcion";
+import { useState } from 'react';
+import Markdown from 'react-markdown';
 
-/*
-CURL -N "http://127.0.0.1:11434/api/chat" \
--d '{
-  "model": "deepseek-r1",
-  "messages": [{"role": "user", "content": "Hello"}]
-}'
-*/
+import { streamAsyncIterator, createQueryString } from '@/utils';
 
 export default function Home() {
-  const [messages, setMessages] = useState("");
+  const [messages, setMessages] = useState('');
 
-  const callback = useCallback((chunk: string) => setMessages(currentMessage => {
-    console.log({chunk});
-    
-    return currentMessage + chunk
-  }), []);
+  const question = 'How do you spell peculer?';
 
-  // await assistantResponseAcion(setMessages);
-  // assistantResponseAcion();
+  const getAssistantResponse = async () => {
+    const response = await fetch(`/app/chat?${createQueryString({ question })}`);
+    const reader = response.body?.getReader();
+    for await (const value of streamAsyncIterator(reader!)) {
+      setMessages(m => m + value)
+    }
+  };
 
   const handleLoadAssistantResponse = async () => {
-    console.log("Clicked");
-    // setMessages(await assistantResponseAcion());
-    assistantResponseAcion(callback);
+    console.log('Clicked');
+    setMessages('')
+    getAssistantResponse();
   };
 
   return (
     <div className="">
       <input type="button" onClick={handleLoadAssistantResponse} value="Load Assistant Response" />
-      {messages}
+      <Markdown>
+        {messages}
+      </Markdown>
     </div>
   );
 }
