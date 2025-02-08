@@ -2,11 +2,13 @@ import { type NextRequest } from 'next/server';
 
 import { streamAsyncIterator, iteratorToStream } from '@/utils';
 
+const transformAIResponse = (value: string) => {
+  const { role, content } = JSON.parse(value).message;
+  return JSON.stringify({ role, content });
+};
+
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
-  const question = searchParams.get('question');
-
-  console.log('question', question);
 
   const response = await fetch('http://127.0.0.1:11434/api/chat', {
     method: 'POST',
@@ -16,10 +18,10 @@ export async function GET(request: NextRequest) {
     body: JSON.stringify({
       model: 'deepseek-r1',
       streaming: true,
-      messages: [{
-        role: 'user',
-        content: question
-      }]
+      messages: [
+        { role: 'system', content: 'Keep your answer simple, straight forward, consise and avoid rambling.' },
+        { role: 'user', content: searchParams.get('question') }
+      ]
     }),
   });
 
@@ -29,10 +31,3 @@ export async function GET(request: NextRequest) {
 
   return new Response(stream);
 }
-
-// export async function GET() {
-//   const iterator = makeIterator();
-//   const stream = iteratorToStream(iterator);
-
-//   return new Response(stream);
-// }
