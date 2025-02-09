@@ -2,11 +2,6 @@ import { type NextRequest } from 'next/server';
 
 import { streamAsyncIterator, iteratorToStream } from '@/utils';
 
-const transformAIResponse = (value: string) => {
-  const { role, content } = JSON.parse(value).message;
-  return JSON.stringify({ role, content });
-};
-
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
 

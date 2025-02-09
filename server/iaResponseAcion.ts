@@ -2,7 +2,7 @@
 
 import { streamAsyncIterator } from '@/utils';
 
-export async function assistantResponseAcion() {
+export async function aiResponseAcion() {
   const result = await fetch('http://127.0.0.1:11434/api/chat', {
     method: 'POST',
     headers: {
