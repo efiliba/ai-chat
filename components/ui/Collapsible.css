@@ -1,0 +1,11 @@
+.collapsible-content {
+	overflow: hidden;
+}
+
+.collapsible-content[data-state="open"] {
+	animation: slideDown .3s ease-out;
+}
+
+.collapsible-content[data-state="closed"] {
+	animation: slideUp .3s ease-out;
+}

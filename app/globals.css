@@ -1,28 +1,76 @@
 @import "tailwindcss";
 
-@theme {
-  --color-primary: #aab9ff;
+@plugin "tailwindcss-animate";
+@plugin "tailwindcss-motion";
+
+/* @custom-variant dark (&:where(.dark, .dark *)); */
+
+@font-face {
+  font-family: Geist;
+  font-display: swap;
+  src: url("/geist.woff2") format("woff2");
 }
 
-/* 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@font-face {
+  font-family: Calistoga;
+  font-display: swap;
+  src: url("/calistoga.woff2") format("woff2");
+}
+
+@theme {
+  --font-sans: Geist, sans-serif;
+  --font-serif: Calistoga;
+  --color-primary: var(--color-yellow-600);
+  --color-background: var(--color-gray-100);
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  interpolate-size: allow-keywords;
+  
+  @media (prefers-color-scheme: dark) {
+    --color-primary: var(--color-indigo-300);
+    --color-background: var(--color-gray-900);
   }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-} */
+  @apply antialiased;
+  @apply bg-background;
+}
+
+@layer components {
+  .typography {
+    p {
+      font-size: var(--text-base);
+      color: var(--color-gray-700);
+    }
+    h1 {
+      font-size: var(--text-2xl--line-height);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-gray-950);
+    }
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-gray-950);
+    }
+  }
+}
+
+@keyframes slideUp {
+	from {
+		height: var(--radix-collapsible-content-height);
+	}
+	to {
+		height: 0;
+	}
+}
+
+@keyframes slideDown {
+	from {
+		height: 0;
+	}
+	to {
+		height: var(--radix-collapsible-content-height);
+	}
+}
