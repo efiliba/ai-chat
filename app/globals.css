@@ -8,13 +8,13 @@
 @font-face {
   font-family: Geist;
   font-display: swap;
-  src: url("/geist.woff2") format("woff2");
+  src: url("/font/Geist-Regular.woff2") format("woff2");
 }
 
 @font-face {
   font-family: Calistoga;
   font-display: swap;
-  src: url("/calistoga.woff2") format("woff2");
+  src: url("/font/Calistoga-Regular.woff2") format("woff2");
 }
 
 @theme {

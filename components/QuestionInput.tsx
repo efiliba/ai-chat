@@ -3,7 +3,7 @@ import { MessageSquare, SendHorizontal, X } from 'lucide-react';
 
 import { Button, Input } from '@/components/ui';
 
-export const Question = memo(({ loading, onSubmit, onCancel }: {
+export const QuestionInput = memo(({ loading, onSubmit, onCancel }: {
   loading: boolean; onSubmit: (input: string) => void; onCancel: () => void}
 ) => {
   const [input, setInput] = useState('');

@@ -1,4 +1,4 @@
 export * from './ui';
-export * from './Question';
-export * from './UserMessage';
-export * from './AIMessage';
+export * from './AIResponse';
+export * from './QuestionInput';
+export * from './UserQuestion';
