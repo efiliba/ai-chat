@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { Bot, ArrowUpToLine, ArrowDownToLine } from 'lucide-react';
+import { Bot, Loader2, ArrowUpToLine, ArrowDownToLine } from 'lucide-react';
 import Markdown from 'react-markdown';
 
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui';
@@ -18,7 +18,10 @@ export const AIResponse = memo(({ reasoning, answer }: { reasoning: string; answ
           open={open}
           onOpenChange={handleOpen}
         >
-          <Bot className="h-4 w-4" />
+          {answer
+            ? <Bot className="h-4 w-4" />
+            : <Loader2 className="h-4 w-4 animate-spin" />
+          }
           <div className="text-sm font-medium">"AI"</div>
           <CollapsibleTrigger className="grid col-span-2 grid-cols-subgrid text-xs italic cursor-pointer">
             {open
@@ -33,10 +36,14 @@ export const AIResponse = memo(({ reasoning, answer }: { reasoning: string; answ
             }
           </CollapsibleTrigger>
           <CollapsibleContent className="col-span-full prose max-w-none prose-invert prose-p:text-gray-100 prose-headings:text-gray-100 prose-strong:text-gray-100 prose-li:text-gray-100">
-            <Markdown className="font-sans text-gray-400">{reasoning}</Markdown>
+            <Markdown className="font-sans mb-2 text-sm italic border-l-2 border-gray-600 pl-2 py-1 text-gray-300">
+              {reasoning}
+            </Markdown>
           </CollapsibleContent>
         </Collapsible>
-        <Markdown className="pt-3 font-serif">{answer}</Markdown>
+        <article className="prose max-w-none prose-invert prose-p:text-gray-100 prose-headings:text-gray-100 prose-strong:text-gray-100 prose-li:text-gray-100">
+          <Markdown className="pt-3">{answer}</Markdown>
+        </article>
       </div>
     : null;
 });

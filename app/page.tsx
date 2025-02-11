@@ -12,6 +12,24 @@ export default function Home() {
 
   const handleCancelAIResponse = useCallback(abort, []);
 
+    // <div class="window">
+  //   <div class="autoscroll">
+  //   </div>
+  // </div>
+
+  // .window {
+  //   height: 300px;
+  // }
+  
+  // .autoscroll {
+  //   border: solid 1px;
+  //   display: flex;
+  //   flex-direction: column-reverse;
+  //   height: calc(100% - 56px);
+  //   overflow-y: auto;
+  // }
+  // <div className="flex flex-col-reverse overflow-y-auto h-[calc(100%-56px)]">
+
   return (
     <div className="h-screen grid content-between">
       <div className="p-4 container mx-auto max-w-4xl space-y-4 overflow-scroll">
