@@ -10,17 +10,33 @@ export const iteratorToStream = <T>(iterator: {
     },
   });
 
-export const streamAsyncIterator = (
+const containsErrorObject = (data: string) => {
+  try {
+    return !!JSON.parse(data).error;
+  } catch {
+    return false;
+  }
+};
+
+export const streamToAsyncGenerator = (
   reader: ReadableStreamDefaultReader<Uint8Array>,
-  transform = (x: string) => JSON.parse(x)
+  transform = (x: string) => x
 ) => ({
   async *[Symbol.asyncIterator]() {
     const decoder = new TextDecoder("utf-8");
     try {
       let { done, value } = await reader.read();
       while (!done) {
-        yield transform(decoder.decode(value));
-        ({ done, value } = await reader.read());
+        const decoded = decoder.decode(value);
+        if (containsErrorObject(decoded)) {
+          yield "_*_error_*_";
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          yield JSON.parse(decoded).error;
+          done = true;
+        } else {
+          yield transform(decoded);
+          ({ done, value } = await reader.read());
+        }
       }
     } finally {
       reader.releaseLock();

@@ -1,6 +1,6 @@
 "use server";
 
-import { streamAsyncIterator } from "@/utils";
+import { streamToAsyncGenerator } from "@/utils";
 
 export async function aiResponseAcion() {
   const result = await fetch("http://127.0.0.1:11434/api/chat", {
@@ -22,7 +22,7 @@ export async function aiResponseAcion() {
 
   let aiResponse = "";
   const reader = result.body!.getReader();
-  for await (const value of streamAsyncIterator(reader)) {
+  for await (const value of streamToAsyncGenerator(reader)) {
     const {
       message: { content },
     } = JSON.parse(value);

@@ -1,63 +1,40 @@
-import { memo, useState } from "react";
-import { Bot, Loader2, ArrowUpToLine, ArrowDownToLine } from "lucide-react";
-import Markdown from "react-markdown";
+import { CircleAlert, CloudCog } from "lucide-react";
+import { AIAnswer } from "@/components";
 
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "@/components/ui";
+interface Props {
+  error?: boolean;
+  loading?: boolean;
+  reasoning: string;
+  answer: string;
+}
 
-export const AIResponse = memo(
-  ({ reasoning, answer }: { reasoning: string; answer: string }) => {
-    const [open, setOpen] = useState(true);
-
-    const handleOpen = () => setOpen((toggle) => !toggle);
-
-    // cloud-cog
-
-    return reasoning.length > 0 ? (
-      <div className="max-w-[90%] rounded-lg p-4 bg-gray-800 text-gray-100">
-        <Collapsible
-          className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3 "
-          open={open}
-          onOpenChange={handleOpen}
-        >
-          {answer ? (
-            <Bot className="h-4 w-4" />
-          ) : (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          )}
-          <div className="text-sm font-medium">&rdquo;AI&rdquo;</div>
-          <CollapsibleTrigger className="grid col-span-2 grid-cols-subgrid text-xs italic cursor-pointer">
-            {open ? (
-              <>
-                <div className="justify-self-end text-xs italic">
-                  Hide Reasoning
-                </div>
-                <ArrowUpToLine className="size-4" />
-              </>
-            ) : (
-              <>
-                <div className="justify-self-end text-xs italic">
-                  Show Reasoning
-                </div>
-                <ArrowDownToLine className="size-4" />
-              </>
-            )}
-          </CollapsibleTrigger>
-          <CollapsibleContent className="col-span-full prose max-w-none prose-invert prose-p:text-gray-100 prose-headings:text-gray-100 prose-strong:text-gray-100 prose-li:text-gray-100">
-            <Markdown className="font-sans mb-2 text-sm italic border-l-2 border-gray-600 pl-2 py-1 text-gray-300">
-              {reasoning}
-            </Markdown>
-          </CollapsibleContent>
-        </Collapsible>
-        <article className="prose max-w-none prose-invert prose-p:text-gray-100 prose-headings:text-gray-100 prose-strong:text-gray-100 prose-li:text-gray-100">
-          <Markdown className="pt-3">{answer}</Markdown>
-        </article>
-      </div>
-    ) : null;
-  }
+const AIError = ({ error }: { error: string }) => (
+  <div className="rounded-lg p-4 bg-red-700 text-gray-100 grid grid-cols-[auto_auto_1fr] items-center gap-3">
+    <CircleAlert className="h-4 w-4" />
+    <div className="text-sm font-medium">Error</div>
+    <div className="col-span-3">{error}</div>
+  </div>
 );
 
-AIResponse.displayName = "AIResponse";
+const AILoading = () => (
+  <div className="max-w-[90%] rounded-lg p-4 bg-gray-800 text-gray-100 grid grid-cols-[auto_auto_1fr] items-center gap-3">
+    <CloudCog className="h-4 w-4" />
+    <div className="text-sm font-medium">&rdquo;AI&rdquo;</div>
+    <div className="justify-self-end text-xs italic motion-preset-typewriter-[10]">
+      Loading...
+    </div>
+  </div>
+);
+
+export const AIResponse = ({ error, loading, reasoning, answer }: Props) => {
+  switch (true) {
+    case error:
+      return <AIError error={reasoning} />;
+    case loading && reasoning.length === 0:
+      return <AILoading />;
+    case reasoning.length > 0:
+      return <AIAnswer reasoning={reasoning} answer={answer} />;
+    default:
+      return null;
+  }
+};

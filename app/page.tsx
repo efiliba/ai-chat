@@ -6,7 +6,7 @@ import { useAI } from "@/hooks";
 import { QuestionInput, UserQuestion, AIResponse } from "@/components";
 
 export default function Home() {
-  const { ask, loading, reasoning, answer, history, abort } = useAI(
+  const { ask, loading, error, reasoning, answer, history, abort } = useAI(
     "<think>",
     "</think>"
   );
@@ -47,7 +47,12 @@ export default function Home() {
             />
           )
         )}
-        <AIResponse reasoning={reasoning} answer={answer} />
+        <AIResponse
+          error={error}
+          loading={loading}
+          reasoning={reasoning}
+          answer={answer}
+        />
       </div>
       <QuestionInput
         loading={loading}

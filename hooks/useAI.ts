@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 
-import { streamAsyncIterator, createQueryString } from "@/utils";
+import { streamToAsyncGenerator, createQueryString } from "@/utils";
 
 // role: 'user' | 'assistant' | 'tool' | 'system';
 
@@ -25,6 +25,7 @@ export const useAI = (
 ) => {
   const controller = useRef<AbortController>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [reasoning, setReasoning] = useState("");
   const [answer, setAnswer] = useState("");
   const [history, setHistory] = useState<Message[]>([]);
@@ -34,11 +35,14 @@ export const useAI = (
 
     setHistory((chat) =>
       chat
-        .concat([{ role: "assistant", content: { reasoning, answer } }]) // Previous AI response
+        .concat(
+          error ? [] : [{ role: "assistant", content: { reasoning, answer } }]
+        ) // Previous AI response
         .concat({ role: "user", content: question })
     );
 
     setLoading(true);
+    setError(false);
     setReasoning("");
     setAnswer("");
 
@@ -50,11 +54,13 @@ export const useAI = (
       const reader = response.body!.getReader();
 
       let endReasoningMarkerDetected = false;
-      for await (const value of streamAsyncIterator(reader)) {
+      for await (const value of streamToAsyncGenerator(reader)) {
         if (endReasoningMarkerDetected) {
           setAnswer((message) => message + value);
         } else if (value === endReasoningMarker) {
           endReasoningMarkerDetected = true;
+        } else if (value === "_*_error_*_") {
+          setError(true);
         } else if (value !== startReasoningMarker) {
           setReasoning((message) => message + value);
         }
@@ -71,6 +77,7 @@ export const useAI = (
   return {
     ask,
     loading,
+    error,
     reasoning,
     answer,
     history,

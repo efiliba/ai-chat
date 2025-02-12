@@ -1,6 +1,6 @@
 import { type NextRequest } from "next/server";
 
-import { streamAsyncIterator, iteratorToStream } from "@/utils";
+import { streamToAsyncGenerator, iteratorToStream } from "@/utils";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   });
 
   const reader = response.body!.getReader();
-  const iterator = streamAsyncIterator(
+  const iterator = streamToAsyncGenerator(
     reader,
     (value) => JSON.parse(value).message.content
   );
