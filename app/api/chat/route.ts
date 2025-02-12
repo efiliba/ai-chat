@@ -24,9 +24,9 @@ export async function GET(request: NextRequest) {
     }),
   });
 
-  const reader = response.body?.getReader();
+  const reader = response.body!.getReader();
   const iterator = streamAsyncIterator(
-    reader!,
+    reader,
     (value) => JSON.parse(value).message.content
   );
   const stream = iteratorToStream(iterator);
