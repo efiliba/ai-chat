@@ -61,7 +61,7 @@ export const QuestionInput = memo(
           placeholder="Ask the AI a question"
           onChange={handleSetInput}
         />
-        <MessageSquare className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-6 top-1/2" />
+        <MessageSquare className="absolute w-4 text-gray-400 -translate-y-1/2 left-6 top-1/2" />
         <Button
           className="bg-primary hover:bg-primary/90"
           type="submit"

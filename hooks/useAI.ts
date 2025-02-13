@@ -36,8 +36,8 @@ export const useAI = (
     setHistory((chat) =>
       chat
         .concat(
-          error ? [] : [{ role: "assistant", content: { reasoning, answer } }]
-        ) // Previous AI response
+          error ? [] : [{ role: "assistant", content: { reasoning, answer } }] // Previous AI response
+        )
         .concat({ role: "user", content: question })
     );
 
