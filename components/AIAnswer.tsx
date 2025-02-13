@@ -25,30 +25,30 @@ export const AIAnswer = ({ reasoning, answer }: Props) => {
         onOpenChange={handleOpen}
       >
         {answer ? (
-          <Bot className="h-4 w-4" />
+          <Bot className="w-4 h-4" />
         ) : (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="w-4 h-4 animate-spin" />
         )}
         <div className="text-sm font-medium">&rdquo;AI&rdquo;</div>
-        <CollapsibleTrigger className="grid col-span-2 grid-cols-subgrid text-xs italic cursor-pointer">
+        <CollapsibleTrigger className="grid col-span-2 text-xs italic cursor-pointer grid-cols-subgrid">
           {open ? (
             <>
-              <div className="justify-self-end text-xs italic">
+              <div className="text-xs italic justify-self-end">
                 Hide Reasoning
               </div>
               <ArrowUpToLine className="size-4" />
             </>
           ) : (
             <>
-              <div className="justify-self-end text-xs italic">
+              <div className="text-xs italic justify-self-end">
                 Show Reasoning
               </div>
               <ArrowDownToLine className="size-4" />
             </>
           )}
         </CollapsibleTrigger>
-        <CollapsibleContent className="col-span-full prose max-w-none prose-invert prose-p:text-gray-100 prose-headings:text-gray-100 prose-strong:text-gray-100 prose-li:text-gray-100">
-          <Markdown className="font-sans mb-2 text-sm italic border-l-2 border-gray-600 pl-2 py-1 text-gray-300">
+        <CollapsibleContent className="prose col-span-full max-w-none prose-invert prose-p:text-gray-100 prose-headings:text-gray-100 prose-strong:text-gray-100 prose-li:text-gray-100">
+          <Markdown className="py-1 pl-2 mb-2 font-sans text-sm italic text-gray-300 border-l-2 border-gray-600">
             {reasoning}
           </Markdown>
         </CollapsibleContent>

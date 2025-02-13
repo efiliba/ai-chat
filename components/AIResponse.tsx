@@ -10,7 +10,7 @@ interface Props {
 
 const AIError = ({ error }: { error: string }) => (
   <div className="rounded-lg p-4 bg-red-700 text-gray-100 grid grid-cols-[auto_auto_1fr] items-center gap-3">
-    <CircleAlert className="h-4 w-4" />
+    <CircleAlert className="w-4 h-4" />
     <div className="text-sm font-medium">Error</div>
     <div className="col-span-3">{error}</div>
   </div>
@@ -18,7 +18,7 @@ const AIError = ({ error }: { error: string }) => (
 
 const AILoading = () => (
   <div className="max-w-[90%] rounded-lg p-4 bg-gray-800 text-gray-100 grid grid-cols-[auto_auto_1fr] items-center gap-3">
-    <CloudCog className="h-4 w-4" />
+    <CloudCog className="w-4 h-4" />
     <div className="text-sm font-medium">&rdquo;AI&rdquo;</div>
     <div className="justify-self-end text-xs italic motion-preset-typewriter-[10]">
       Loading...

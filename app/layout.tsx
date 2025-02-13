@@ -1,19 +1,19 @@
-import { ReactNode } from 'react';
-import type { Metadata } from 'next';
+import { ReactNode } from "react";
+import type { Metadata } from "next";
 
-import './globals.css';
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'AI Chat',
-  description: 'Local DeepSeek-R1 Chat App',
+  title: "AI Chat",
+  description: "Local DeepSeek-R1 Chat App",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

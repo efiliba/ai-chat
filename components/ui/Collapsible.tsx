@@ -1,15 +1,21 @@
-"use client"
+"use client";
 
-import { type PropsWithChildren } from "react"
-import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"
+import { type PropsWithChildren } from "react";
+import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
 
 import "./Collapsible.css";
 
-const Collapsible = CollapsiblePrimitive.Root
+const Collapsible = CollapsiblePrimitive.Root;
 
-const CollapsibleTrigger = CollapsiblePrimitive.CollapsibleTrigger
+const CollapsibleTrigger = CollapsiblePrimitive.CollapsibleTrigger;
 
-const CollapsibleContent = (props: PropsWithChildren<{ className: string }>) =>
-  <CollapsiblePrimitive.CollapsibleContent {...props} className={`collapsible-content ${props.className}`} />
+const CollapsibleContent = (
+  props: PropsWithChildren<{ className: string }>
+) => (
+  <CollapsiblePrimitive.CollapsibleContent
+    {...props}
+    className={`collapsible-content ${props.className}`}
+  />
+);
 
-export { Collapsible, CollapsibleTrigger, CollapsibleContent }
+export { Collapsible, CollapsibleTrigger, CollapsibleContent };
