@@ -5,6 +5,11 @@ import { useCallback } from "react";
 import { useAI } from "@/hooks";
 import { QuestionInput, UserQuestion, AIResponse } from "@/components";
 
+//   // To kick off effect immediately, this plus CSS
+//   document.scrollingElement.scroll(0, 1);
+/* In case you need to kick off effect immediately, this plus JS */
+/* height: 100.001vh; */
+
 export default function Home() {
   const { ask, loading, error, reasoning, answer, history, abort } = useAI(
     "<think>",
@@ -15,27 +20,9 @@ export default function Home() {
 
   const handleCancelAIResponse = useCallback(abort, [abort]);
 
-  // <div class="window">
-  //   <div class="autoscroll">
-  //   </div>
-  // </div>
-
-  // .window {
-  //   height: 300px;
-  // }
-
-  // .autoscroll {
-  //   border: solid 1px;
-  //   display: flex;
-  //   flex-direction: column-reverse;
-  //   height: calc(100% - 56px);
-  //   overflow-y: auto;
-  // }
-  // <div className="flex flex-col-reverse overflow-y-auto h-[calc(100%-56px)]">
-
   return (
-    <div className="h-screen grid content-between">
-      <div className="p-4 container mx-auto max-w-4xl space-y-4 overflow-scroll">
+    <div className="[&_*]:[overflow-anchor:none] min-h-screen" id="scroller">
+      <div className="max-w-4xl p-4 mx-auto space-y-4 border-white border-1">
         {history.map(({ role, content }, index) =>
           role === "user" ? (
             <UserQuestion key={index} text={content} />
@@ -54,8 +41,11 @@ export default function Home() {
           answer={answer}
         />
       </div>
+      <div className="[overflow-anchor:auto!important] h-0.5" />
       <QuestionInput
+        className="sticky bottom-0"
         loading={loading}
+        focus={!loading}
         onSubmit={handleLoadAIResponse}
         onCancel={handleCancelAIResponse}
       />
