@@ -16,29 +16,29 @@ export default function Home() {
   const handleCancelAIResponse = useCallback(abort, [abort]);
 
   return (
-    <div className="[&_*:not(.scroll-anchor)]:[overflow-anchor:none] min-h-screen grid grid-rows-[1fr_auto_auto]">
-      <div className="container max-w-4xl p-4 mx-auto space-y-4">
-        {history.map(({ role, content }, index) =>
-          role === "user" ? (
-            <UserQuestion key={index} text={content} />
-          ) : (
-            <AIResponse
-              key={index}
-              reasoning={content.reasoning}
-              answer={content.answer}
-            />
-          )
-        )}
-        <AIResponse
-          error={error}
-          loading={loading}
-          reasoning={reasoning}
-          answer={answer}
-        />
+    <div className="grid grid-rows-[1fr_auto] h-screen">
+      <div className="container flex flex-col-reverse max-w-4xl p-4 mx-auto overflow-y-auto">
+        <div className="space-y-4 basis-full">
+          {history.map(({ role, content }, index) =>
+            role === "user" ? (
+              <UserQuestion key={index} text={content} />
+            ) : (
+              <AIResponse
+                key={index}
+                reasoning={content.reasoning}
+                answer={content.answer}
+              />
+            )
+          )}
+          <AIResponse
+            error={error}
+            loading={loading}
+            reasoning={reasoning}
+            answer={answer}
+          />
+        </div>
       </div>
-      <div className="scroll-anchor h-[1px]" />
       <QuestionInput
-        className="sticky bottom-0"
         loading={loading}
         focus={!loading}
         onSubmit={handleLoadAIResponse}
