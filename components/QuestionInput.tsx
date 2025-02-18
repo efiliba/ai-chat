@@ -8,7 +8,14 @@ import {
 } from "react";
 import { MessageSquare, SendHorizontal, X } from "lucide-react";
 
-import { Button, Input } from "@/components/ui";
+import {
+  Button,
+  Input,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -62,18 +69,27 @@ export const QuestionInput = memo(
           onChange={handleSetInput}
         />
         <MessageSquare className="absolute w-4 text-gray-400 -translate-y-1/2 left-6 top-1/2" />
-        <Button
-          className="bg-primary hover:bg-primary/90"
-          type="submit"
-          disabled={input.trim().length === 0 && !loading}
-        >
-          {loading ? (
-            <X className="w-4 h-4" />
-          ) : (
-            <SendHorizontal className="w-4 h-4" />
-          )}
-          <span className="sr-only">{loading ? "Stop" : "Send"}</span>
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="bg-primary hover:bg-primary/90 hover:cursor-pointer"
+                type="submit"
+                disabled={input.trim().length === 0 && !loading}
+              >
+                {loading ? (
+                  <X className="w-4 h-4" />
+                ) : (
+                  <SendHorizontal className="w-4 h-4" />
+                )}
+                <span className="sr-only">{loading ? "Stop" : "Send"}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{loading ? "Stop" : "Send"}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </form>
     );
   }
