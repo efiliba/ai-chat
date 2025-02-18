@@ -17,4 +17,6 @@ type AIAnswer = {
   content: AIAnswerContent;
 };
 
-export type Message = Prettify<(UserQuestion | AIAnswer) & { error?: boolean }>;
+export type Message = Prettify<
+  (UserQuestion | AIAnswer) & { error?: boolean; cancelled?: boolean }
+>;

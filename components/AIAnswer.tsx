@@ -11,11 +11,21 @@ import {
 interface Props {
   reasoning: string;
   answer: string;
+  hideReasoning?: boolean;
+  onToggleReasoning?: () => void;
 }
-export const AIAnswer = ({ reasoning, answer }: Props) => {
-  const [open, setOpen] = useState(true);
+export const AIAnswer = ({
+  reasoning,
+  answer,
+  hideReasoning = false,
+  onToggleReasoning = () => {},
+}: Props) => {
+  const [open, setOpen] = useState(!hideReasoning);
 
-  const handleOpen = () => setOpen((toggle) => !toggle);
+  const handleOpen = () => {
+    setOpen((toggle) => !toggle);
+    onToggleReasoning();
+  };
 
   return (
     <div className="max-w-[90%] rounded-lg p-4 bg-gray-800 text-gray-100">

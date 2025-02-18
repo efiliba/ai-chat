@@ -1,11 +1,13 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { useAI } from "@/hooks";
 import { QuestionInput, UserQuestion, AIResponse } from "@/components";
 
 export default function Home() {
+  const [hideReasoning, setHideReasoning] = useState(false);
+
   const { ask, loading, error, reasoning, answer, history, abort } = useAI(
     "<think>",
     "</think>"
@@ -14,6 +16,10 @@ export default function Home() {
   const handleLoadAIResponse = useCallback(ask, [ask, loading]);
 
   const handleCancelAIResponse = useCallback(abort, [abort]);
+
+  const handleToggleReasoning = () => {
+    setHideReasoning((toggle) => !toggle);
+  };
 
   return (
     <div className="grid grid-rows-[1fr_auto] h-screen">
@@ -27,6 +33,7 @@ export default function Home() {
                 key={index}
                 reasoning={content.reasoning}
                 answer={content.answer}
+                hideReasoning={hideReasoning}
               />
             )
           )}
@@ -35,6 +42,8 @@ export default function Home() {
             loading={loading}
             reasoning={reasoning}
             answer={answer}
+            hideReasoning={hideReasoning}
+            onToggleReasoning={handleToggleReasoning}
           />
         </div>
       </div>

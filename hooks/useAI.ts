@@ -63,6 +63,8 @@ export const useAI = (
     } catch (e) {
       if (e instanceof Error && e.name === "AbortError") {
         console.log("User aborted request");
+        dispatch(HistoryActionCreator.setLastQuestionCancelled());
+        dispatch(HistoryActionCreator.moveCancelledResponse());
       }
     }
 

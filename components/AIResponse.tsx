@@ -6,6 +6,8 @@ interface Props {
   loading?: boolean;
   reasoning: string;
   answer: string;
+  hideReasoning?: boolean;
+  onToggleReasoning?: () => void;
 }
 
 const AIError = ({ error }: { error: string }) => (
@@ -26,14 +28,28 @@ const AILoading = () => (
   </div>
 );
 
-export const AIResponse = ({ error, loading, reasoning, answer }: Props) => {
+export const AIResponse = ({
+  error,
+  loading,
+  reasoning,
+  answer,
+  hideReasoning,
+  onToggleReasoning,
+}: Props) => {
   switch (true) {
     case error:
       return <AIError error={reasoning} />;
     case loading && reasoning.length === 0:
       return <AILoading />;
     case reasoning.length > 0:
-      return <AIAnswer reasoning={reasoning} answer={answer} />;
+      return (
+        <AIAnswer
+          reasoning={reasoning}
+          answer={answer}
+          hideReasoning={hideReasoning}
+          onToggleReasoning={onToggleReasoning}
+        />
+      );
     default:
       return null;
   }
