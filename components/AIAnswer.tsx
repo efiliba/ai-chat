@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Bot, Loader2, ArrowUpToLine, ArrowDownToLine } from "lucide-react";
 import Markdown from "react-markdown";
+import classNames from "classnames";
 
 import {
   Collapsible,
@@ -9,12 +10,15 @@ import {
 } from "@/components/ui";
 
 interface Props {
+  cancelled?: boolean;
   reasoning: string;
   answer: string;
   hideReasoning?: boolean;
   onToggleReasoning?: () => void;
 }
+
 export const AIAnswer = ({
+  cancelled,
   reasoning,
   answer,
   hideReasoning = false,
@@ -28,18 +32,25 @@ export const AIAnswer = ({
   };
 
   return (
-    <div className="max-w-[90%] rounded-lg p-4 bg-gray-800 text-gray-100">
+    <div
+      className={classNames(
+        "max-w-[90%] rounded-lg p-4 bg-gray-800 text-gray-100",
+        { "opacity-25": cancelled }
+      )}
+    >
       <Collapsible
         className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3"
         open={open}
         onOpenChange={handleOpen}
       >
-        {answer ? (
+        {answer || cancelled ? (
           <Bot className="w-4 h-4" />
         ) : (
           <Loader2 className="w-4 h-4 animate-spin" />
         )}
-        <div className="text-sm font-medium">&rdquo;AI&rdquo;</div>
+        <div className="text-sm font-medium">{`"AI"${
+          cancelled ? " - cancelled" : ""
+        }`}</div>
         <CollapsibleTrigger className="grid col-span-2 text-xs italic cursor-pointer grid-cols-subgrid">
           {open ? (
             <>

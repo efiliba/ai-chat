@@ -1,8 +1,10 @@
 import { CircleAlert, CloudCog } from "lucide-react";
+
 import { AIAnswer } from "@/components";
 
 interface Props {
   error?: boolean;
+  cancelled?: boolean;
   loading?: boolean;
   reasoning: string;
   answer: string;
@@ -30,6 +32,7 @@ const AILoading = () => (
 
 export const AIResponse = ({
   error,
+  cancelled,
   loading,
   reasoning,
   answer,
@@ -44,6 +47,7 @@ export const AIResponse = ({
     case reasoning.length > 0:
       return (
         <AIAnswer
+          cancelled={cancelled}
           reasoning={reasoning}
           answer={answer}
           hideReasoning={hideReasoning}

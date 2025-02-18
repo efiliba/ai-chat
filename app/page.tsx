@@ -25,12 +25,19 @@ export default function Home() {
     <div className="grid grid-rows-[1fr_auto] h-screen">
       <div className="container flex flex-col-reverse max-w-4xl p-4 mx-auto overflow-y-auto">
         <div className="space-y-4 basis-full">
-          {history.map(({ role, content }, index) =>
+          {history.map(({ error, cancelled, role, content }, index) =>
             role === "user" ? (
-              <UserQuestion key={index} text={content} />
+              <UserQuestion
+                key={index}
+                error={error}
+                cancelled={cancelled}
+                text={content}
+              />
             ) : (
               <AIResponse
                 key={index}
+                error={error}
+                cancelled={cancelled}
                 reasoning={content.reasoning}
                 answer={content.answer}
                 hideReasoning={hideReasoning}
