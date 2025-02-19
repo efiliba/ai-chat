@@ -1,16 +1,16 @@
-import { useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
 
 import { historyReducer, HistoryActionCreator } from "@/reducers";
-import { streamToAsyncGenerator, createQueryString } from "@/utils";
+import { streamToAsyncGenerator } from "@/utils";
+import { chatHistoryAcion } from "@/server";
 
 // role: 'user' | 'assistant' | 'tool' | 'system';
 
 export const useAI = (
+  id: string,
   startReasoningMarker?: string,
   endReasoningMarker?: string
 ) => {
-  const controller = useRef<AbortController>(null);
-
   const [state, dispatch] = useReducer(historyReducer, {
     loading: false,
     error: false,
@@ -18,6 +18,14 @@ export const useAI = (
     answer: "",
     history: [],
   });
+
+  useEffect(() => {
+    (async () => {
+      dispatch(HistoryActionCreator.setHistory(await chatHistoryAcion(id)));
+    })();
+  }, [id]);
+
+  const controller = useRef<AbortController>(null);
 
   const ask = async (question: string) => {
     controller.current = new AbortController();
@@ -28,10 +36,21 @@ export const useAI = (
     dispatch(HistoryActionCreator.setError(false));
 
     try {
-      const response = await fetch(
-        `/api/chat?${createQueryString({ question })}`,
-        { signal: controller.current.signal }
-      );
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          question,
+        }),
+        signal: controller.current.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error(`${response.status}: ${response.statusText}`);
+      }
 
       const reader = response.body!.getReader();
 
@@ -62,9 +81,12 @@ export const useAI = (
       }
     } catch (e) {
       if (e instanceof Error && e.name === "AbortError") {
-        console.log("User aborted request");
         dispatch(HistoryActionCreator.setLastQuestionCancelled());
         dispatch(HistoryActionCreator.moveCancelledResponse());
+      } else {
+        dispatch(HistoryActionCreator.setError(true));
+        dispatch(HistoryActionCreator.buildReasoning(String(e)));
+        dispatch(HistoryActionCreator.setLastQuestionErrored());
       }
     }
 

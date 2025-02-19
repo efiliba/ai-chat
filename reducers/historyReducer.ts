@@ -3,6 +3,7 @@ import { type Message } from "@/types";
 const ActionType = {
   SET_LOADING: "SET_LOADING",
   SET_ERROR: "SET_ERROR",
+  SET_HISTORY: "SET_HISTORY",
   SET_LAST_QUESTION_ERRORED: "SET_LAST_QUESTION_ERRORED",
   SET_LAST_QUESTION_CANCELLED: "SET_LAST_QUESTION_CANCELLED",
   ADD_QUESTION: "ADD_QUESTION",
@@ -13,32 +14,6 @@ const ActionType = {
   BUILD_ANSWER: "BUILD_ANSWER",
 } as const;
 
-// export type ActionCreator = {
-//   SetLoading: {
-//     type: typeof ActionType.SET_LOADING;
-//     payload: boolean;
-//   };
-//   SetError: {
-//     type: typeof ActionType.SET_ERROR;
-//     payload: boolean;
-//   };
-//   AddQuestion: {
-//     type: typeof ActionType.ADD_QUESTION;
-//     payload: string;
-//   };
-//   BuildReasoning: {
-//     type: typeof ActionType.BUILD_REASONING;
-//     payload: string;
-//   };
-//   BuildAnswer: {
-//     type: typeof ActionType.BUILD_ANSWER;
-//     payload: string;
-//   };
-//   MoveResponse: {
-//     type: typeof ActionType.MOVE_RESPONSE;
-//   };
-// };
-
 export const HistoryActionCreator = {
   setLoading: (payload: boolean) => ({
     type: ActionType.SET_LOADING,
@@ -46,6 +21,10 @@ export const HistoryActionCreator = {
   }),
   setError: (payload: boolean) => ({
     type: ActionType.SET_ERROR,
+    payload,
+  }),
+  setHistory: (payload: Message[]) => ({
+    type: ActionType.SET_HISTORY,
     payload,
   }),
   setLastQuestionErrored: () => ({
@@ -93,6 +72,10 @@ type Action =
       payload: boolean;
     }
   | {
+      type: typeof ActionType.SET_HISTORY;
+      payload: Message[];
+    }
+  | {
       type: typeof ActionType.SET_LAST_QUESTION_ERRORED;
     }
   | {
@@ -131,6 +114,11 @@ export const historyReducer = (state: State, action: Action) => {
       return {
         ...state,
         error: action.payload,
+      };
+    case ActionType.SET_HISTORY:
+      return {
+        ...state,
+        history: action.payload,
       };
     case ActionType.SET_LAST_QUESTION_ERRORED: {
       const history = [...state.history];

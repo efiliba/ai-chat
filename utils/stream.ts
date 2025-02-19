@@ -20,9 +20,12 @@ const containsErrorObject = (data: string) => {
 
 export const streamToAsyncGenerator = (
   reader: ReadableStreamDefaultReader<Uint8Array>,
-  transform = (x: string) => x
+  transform = (x: string) => x,
+  onDone: (x: string) => string | Promise<void> = (x: string) => x
 ) => ({
   async *[Symbol.asyncIterator]() {
+    let stringBuilder = "";
+
     const decoder = new TextDecoder("utf-8");
     try {
       let { done, value } = await reader.read();
@@ -34,10 +37,13 @@ export const streamToAsyncGenerator = (
           yield JSON.parse(decoded).error;
           done = true;
         } else {
-          yield transform(decoded);
+          const transformed = transform(decoded);
+          stringBuilder += transformed;
+          yield transformed;
           ({ done, value } = await reader.read());
         }
       }
+      onDone(stringBuilder);
     } finally {
       reader.releaseLock();
     }

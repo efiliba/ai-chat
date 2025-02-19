@@ -1,4 +1,4 @@
-import { CircleAlert, CloudCog } from "lucide-react";
+import { CircleAlert, CloudCog, Loader2 } from "lucide-react";
 
 import { AIAnswer } from "@/components";
 
@@ -21,12 +21,11 @@ const AIError = ({ error }: { error: string }) => (
 );
 
 const AILoading = () => (
-  <div className="max-w-[90%] rounded-lg p-4 bg-gray-800 text-gray-100 grid grid-cols-[auto_auto_1fr] items-center gap-3">
+  <div className="max-w-[90%] rounded-lg p-4 bg-gray-800 text-gray-100 grid grid-cols-[auto_auto_1fr_auto] items-center gap-3">
     <CloudCog className="w-4 h-4" />
     <div className="text-sm font-medium">&rdquo;AI&rdquo;</div>
-    <div className="justify-self-end text-xs italic motion-preset-typewriter-[10]">
-      Loading...
-    </div>
+    <div className="text-xs italic justify-self-end">Loading...</div>
+    <Loader2 className="w-4 h-4 animate-spin" />
   </div>
 );
 

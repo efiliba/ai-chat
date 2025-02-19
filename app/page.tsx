@@ -9,6 +9,7 @@ export default function Home() {
   const [hideReasoning, setHideReasoning] = useState(false);
 
   const { ask, loading, error, reasoning, answer, history, abort } = useAI(
+    "1",
     "<think>",
     "</think>"
   );
