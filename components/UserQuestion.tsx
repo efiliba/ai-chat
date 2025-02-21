@@ -20,7 +20,9 @@ export const UserQuestion = memo(({ error, cancelled, text }: Props) => (
     <div className="text-sm font-medium">{`"You"${
       cancelled ? " - cancelled" : ""
     }`}</div>
-    <article className="font-serif col-span-full">{text}</article>
+    <article className="font-serif col-span-full selection:bg-amber-200 selection:text-amber-950">
+      {text}
+    </article>
   </div>
 ));
 

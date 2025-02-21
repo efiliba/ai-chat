@@ -1,7 +1,12 @@
 import { type NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
-import { streamToAsyncGenerator, iteratorToStream } from "@/utils";
+import { chatHistoryAcion } from "@/server";
+import {
+  streamToAsyncGenerator,
+  iteratorToStream,
+  joinReasoningAndAnswer,
+} from "@/utils";
 
 const prisma = new PrismaClient();
 
@@ -33,13 +38,7 @@ const save = async ({
 export async function POST(request: NextRequest) {
   const { id, question } = await request.json();
 
-  const createdChat = await prisma.chat.upsert({
-    where: { id },
-    create: { id },
-    update: {},
-  });
-
-  // console.log("createdChat", createdChat);
+  const history = await chatHistoryAcion(id);
 
   const response = await fetch("http://127.0.0.1:11434/api/chat", {
     method: "POST",
@@ -55,6 +54,7 @@ export async function POST(request: NextRequest) {
           content:
             "Keep your answer short, simple, straight forward, consise and avoid rambling, like I am doing here.",
         },
+        ...joinReasoningAndAnswer(history),
         { role: "user", content: question },
       ],
     }),

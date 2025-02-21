@@ -1,15 +1,15 @@
-import { useEffect, useReducer, useRef } from "react";
+import { useEffect, useMemo, useReducer, useRef } from "react";
 
+import { chatHistoryAcion } from "@/server";
 import { historyReducer, HistoryActionCreator } from "@/reducers";
 import { streamToAsyncGenerator } from "@/utils";
-import { chatHistoryAcion } from "@/server";
 
 // role: 'user' | 'assistant' | 'tool' | 'system';
 
 export const useAI = (
   id: string,
-  startReasoningMarker?: string,
-  endReasoningMarker?: string
+  startReasoningMarker: string,
+  endReasoningMarker: string
 ) => {
   const [state, dispatch] = useReducer(historyReducer, {
     loading: false,
@@ -26,6 +26,11 @@ export const useAI = (
   }, [id]);
 
   const controller = useRef<AbortController>(null);
+
+  const endReasoningMarkerRegex = useMemo(
+    () => new RegExp(endReasoningMarker),
+    [endReasoningMarker]
+  );
 
   const ask = async (question: string) => {
     controller.current = new AbortController();
@@ -61,7 +66,7 @@ export const useAI = (
           case endReasoningMarkerDetected:
             dispatch(HistoryActionCreator.buildAnswer(value));
             break;
-          case value === endReasoningMarker:
+          case endReasoningMarkerRegex.test(value):
             endReasoningMarkerDetected = true;
             break;
           case value === "_*_error_*_":

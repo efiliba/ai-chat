@@ -1,11 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 
 import { useAI } from "@/hooks";
 import { QuestionInput, UserQuestion, AIResponse } from "@/components";
 
 export default function Home() {
+  const scrollAnchorRef = useRef<HTMLInputElement>(null);
+
   const [hideReasoning, setHideReasoning] = useState(false);
 
   const { ask, loading, error, reasoning, answer, history, abort } = useAI(
@@ -14,7 +16,13 @@ export default function Home() {
     "</think>"
   );
 
-  const handleLoadAIResponse = useCallback(ask, [ask, loading]);
+  const handleLoadAIResponse = useCallback(
+    (question: string) => {
+      scrollAnchorRef.current?.scrollIntoView();
+      ask(question);
+    },
+    [ask]
+  );
 
   const handleCancelAIResponse = useCallback(abort, [abort]);
 
@@ -53,7 +61,7 @@ export default function Home() {
           onToggleReasoning={handleToggleReasoning}
         />
       </div>
-      <div className="scroll-anchor h-[1px]" />
+      <div ref={scrollAnchorRef} className="scroll-anchor h-[1px]" />
       <QuestionInput
         className="sticky bottom-0"
         loading={loading}

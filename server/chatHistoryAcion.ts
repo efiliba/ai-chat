@@ -3,13 +3,9 @@
 import { PrismaClient, Role } from "@prisma/client";
 
 import { type Message } from "@/types";
+import { splitReasoningAndAnswer } from "@/utils";
 
 const prisma = new PrismaClient();
-
-const splitReasoningAndAnswer = (content: string) => {
-  const [, reasoning = "", answer = ""] = content.split(/<think>|<\/think>/);
-  return { reasoning, answer };
-};
 
 export async function chatHistoryAcion(id: string) {
   const messages = await prisma.chatMessage.findMany({
