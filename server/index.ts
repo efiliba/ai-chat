@@ -1,1 +1,1 @@
-export * from "./chatHistoryAcion";
+export * from "./chatHistoryAction";

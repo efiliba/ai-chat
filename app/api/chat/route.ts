@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
-import { chatHistoryAcion } from "@/server";
+import { chatHistoryAction } from "@/server";
 import {
   streamToAsyncGenerator,
   iteratorToStream,
@@ -46,7 +46,7 @@ const save = async ({
 export async function POST(request: NextRequest) {
   const { id, question } = await request.json();
 
-  const history = await chatHistoryAcion(id);
+  const history = await chatHistoryAction(id);
 
   const createdChat = await prisma.chat.upsert({
     where: { id },

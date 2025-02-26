@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useReducer, useRef } from "react";
 
-import { chatHistoryAcion } from "@/server";
+import { chatHistoryAction } from "@/server";
 import { historyReducer, HistoryActionCreator } from "@/reducers";
 import { streamToAsyncGenerator } from "@/utils";
 
@@ -21,7 +21,7 @@ export const useAI = (
 
   useEffect(() => {
     (async () => {
-      dispatch(HistoryActionCreator.setHistory(await chatHistoryAcion(id)));
+      dispatch(HistoryActionCreator.setHistory(await chatHistoryAction(id)));
     })();
   }, [id]);
 

@@ -7,7 +7,7 @@ import { splitReasoningAndAnswer } from "@/utils";
 
 const prisma = new PrismaClient();
 
-export async function chatHistoryAcion(id: string) {
+export async function chatHistoryAction(id: string) {
   const messages = await prisma.chatMessage.findMany({
     where: {
       chatId: id,

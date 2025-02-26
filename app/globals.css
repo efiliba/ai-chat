@@ -1,13 +1,10 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+@plugin "tailwindcss-animate";
 
 @plugin "@tailwindcss/typography";
 
-@plugin "tailwindcss-animate";
-/* @plugin "tailwindcss-motion"; */
-
-/* @custom-variant dark (&:where(.dark, .dark *)); */
+@custom-variant dark (&:is(.dark *));
 
 @font-face {
   font-family: Geist;
@@ -21,128 +18,42 @@
   src: url("/font/Calistoga-Regular.woff2") format("woff2");
 }
 
-@theme {
+:root {
   --font-sans: Geist, sans-serif;
   --font-serif: Calistoga;
-  --color-primary: var(--color-yellow-600);
-  --color-background: var(--color-gray-100);
-}
-
-:root {
-  interpolate-size: allow-keywords;
-
-  @media (prefers-color-scheme: dark) {
-    --color-primary: var(--color-indigo-300);
-    --color-background: var(--color-gray-900);
-  }
-
   --background: oklch(1 0 0);
-
   --foreground: oklch(0.147 0.004 49.25);
-
   --card: oklch(1 0 0);
-
   --card-foreground: oklch(0.147 0.004 49.25);
-
   --popover: oklch(1 0 0);
-
   --popover-foreground: oklch(0.147 0.004 49.25);
-
   --primary: oklch(0.216 0.006 56.043);
-
   --primary-foreground: oklch(0.985 0.001 106.423);
-
   --secondary: oklch(0.97 0.001 106.424);
-
   --secondary-foreground: oklch(0.216 0.006 56.043);
-
   --muted: oklch(0.97 0.001 106.424);
-
   --muted-foreground: oklch(0.553 0.013 58.071);
-
   --accent: oklch(0.97 0.001 106.424);
-
   --accent-foreground: oklch(0.216 0.006 56.043);
-
   --destructive: oklch(0.577 0.245 27.325);
-
   --destructive-foreground: oklch(0.577 0.245 27.325);
-
   --border: oklch(0.923 0.003 48.717);
-
   --input: oklch(0.923 0.003 48.717);
-
   --ring: oklch(0.869 0.005 56.366);
-
   --chart-1: oklch(0.646 0.222 41.116);
-
   --chart-2: oklch(0.6 0.118 184.704);
-
   --chart-3: oklch(0.398 0.07 227.392);
-
   --chart-4: oklch(0.828 0.189 84.429);
-
   --chart-5: oklch(0.769 0.188 70.08);
-
   --radius: 0.625rem;
-
   --sidebar: oklch(0.985 0.001 106.423);
-
   --sidebar-foreground: oklch(0.147 0.004 49.25);
-
   --sidebar-primary: oklch(0.216 0.006 56.043);
-
   --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
-
   --sidebar-accent: oklch(0.97 0.001 106.424);
-
   --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
-
   --sidebar-border: oklch(0.923 0.003 48.717);
-
-  --sidebar-ring: oklch(0.869 0.005 56.366)
-}
-
-body {
-  @apply antialiased;
-  @apply bg-background;
-}
-
-@layer components {
-  .typography {
-    p {
-      font-size: var(--text-base);
-      color: var(--color-gray-700);
-    }
-    h1 {
-      font-size: var(--text-2xl--line-height);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-gray-950);
-    }
-    h2 {
-      font-size: var(--text-xl);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-gray-950);
-    }
-  }
-}
-
-@keyframes slideUp {
-	from {
-		height: var(--radix-collapsible-content-height);
-	}
-	to {
-		height: 0;
-	}
-}
-
-@keyframes slideDown {
-	from {
-		height: 0;
-	}
-	to {
-		height: var(--radix-collapsible-content-height);
-	}
+  --sidebar-ring: oklch(0.869 0.005 56.366);
 }
 
 .dark {
@@ -217,6 +128,52 @@ body {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply antialiased bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .typography {
+    p {
+      font-size: var(--text-base);
+      color: var(--color-gray-700);
+    }
+    h1 {
+      font-size: var(--text-2xl--line-height);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-gray-950);
+    }
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-gray-950);
+    }
+  }
+}
+
+@keyframes slideUp {
+	from {
+		height: var(--radix-collapsible-content-height);
+	}
+	to {
+		height: 0;
+	}
+}
+
+@keyframes slideDown {
+	from {
+		height: 0;
+	}
+	to {
+		height: var(--radix-collapsible-content-height);
+	}
 }
 
 @layer base {
