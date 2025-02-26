@@ -7,7 +7,7 @@ import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
-} from "@/components/ui";
+} from "@/components/ui/collapsible";
 
 interface Props {
   cancelled?: boolean;

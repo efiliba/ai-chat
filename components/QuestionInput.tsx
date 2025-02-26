@@ -8,14 +8,14 @@ import {
 } from "react";
 import { MessageSquare, SendHorizontal, X } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-  Button,
-  Input,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui";
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface Props {

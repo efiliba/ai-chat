@@ -3,7 +3,9 @@
 import { useRef, useState, useCallback } from "react";
 
 import { useAI } from "@/hooks";
-import { QuestionInput, UserQuestion, AIResponse } from "@/components";
+import { QuestionInput } from "@/components/QuestionInput";
+import { UserQuestion } from "@/components/UserQuestion";
+import { AIResponse } from "@/components/AIResponse";
 
 export default function Home() {
   const scrollAnchorRef = useRef<HTMLInputElement>(null);
@@ -31,7 +33,7 @@ export default function Home() {
   };
 
   return (
-    <div className="[&_*:not(.scroll-anchor)]:[overflow-anchor:none] min-h-screen grid grid-rows-[1fr_auto_auto]">
+    <div className="dark [&_*:not(.scroll-anchor)]:[overflow-anchor:none] min-h-screen grid grid-rows-[1fr_auto_auto]">
       <div className="container max-w-4xl p-4 mx-auto space-y-4">
         {history.map(({ error, cancelled, role, content }, index) =>
           role === "user" ? (

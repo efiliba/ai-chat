@@ -1,6 +1,6 @@
 import { CircleAlert, CloudCog, Loader2 } from "lucide-react";
 
-import { AIAnswer } from "@/components";
+import { AIAnswer } from "@/components/AIAnswer";
 
 interface Props {
   error?: boolean;
