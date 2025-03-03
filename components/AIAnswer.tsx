@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Bot, Loader2, ArrowUpToLine, ArrowDownToLine } from "lucide-react";
 import Markdown from "react-markdown";

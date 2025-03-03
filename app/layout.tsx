@@ -1,22 +1,9 @@
 import { ReactNode } from "react";
 import type { Metadata } from "next";
-import { Settings } from "lucide-react";
 
-import {
-  SidebarProvider,
-  SidebarTrigger,
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarHeader,
-  SidebarInset,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui";
+import { SidebarPanel } from "@/components/SidebarPanel";
 
 import "./globals.css";
 
@@ -29,35 +16,20 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en">
-      <body className="dark">
-        <SidebarProvider defaultOpen={false}>
-          <Sidebar collapsible="offcanvas" variant="inset" side="left">
-            <SidebarHeader />
-            <SidebarContent>
-              <SidebarGroup>
-                <SidebarGroupLabel>Application</SidebarGroupLabel>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild>
-                        <a href="#">
-                          <Settings />
-                          <span>Settings</span>
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-            </SidebarContent>
-            <SidebarFooter />
-          </Sidebar>
-          <SidebarInset>
-            <SidebarTrigger />
-            <main>{children}</main>
-          </SidebarInset>
-        </SidebarProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SidebarProvider defaultOpen={false}>
+            <SidebarPanel />
+            <SidebarTrigger className="sticky top-0 cursor-pointer" />
+            <SidebarInset>{children}</SidebarInset>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

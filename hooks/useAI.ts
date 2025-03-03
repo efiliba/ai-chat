@@ -1,13 +1,16 @@
-import { useEffect, useMemo, useReducer, useRef } from "react";
+"use client";
 
-import { chatHistoryAction } from "@/server";
+import { useMemo, useReducer, useRef } from "react";
+
 import { historyReducer, HistoryActionCreator } from "@/reducers";
 import { streamToAsyncGenerator } from "@/utils";
+import { Message } from "@/types";
 
 // role: 'user' | 'assistant' | 'tool' | 'system';
 
 export const useAI = (
   id: string,
+  initialHistory: Message[] = [],
   startReasoningMarker: string,
   endReasoningMarker: string
 ) => {
@@ -16,14 +19,8 @@ export const useAI = (
     error: false,
     reasoning: "",
     answer: "",
-    history: [],
+    history: initialHistory,
   });
-
-  useEffect(() => {
-    (async () => {
-      dispatch(HistoryActionCreator.setHistory(await chatHistoryAction(id)));
-    })();
-  }, [id]);
 
   const controller = useRef<AbortController>(null);
 

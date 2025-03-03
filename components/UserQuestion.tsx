@@ -11,7 +11,7 @@ interface Props {
 export const UserQuestion = memo(({ error, cancelled, text }: Props) => (
   <div
     className={classNames(
-      "grid justify-self-end grid-cols-[auto_1fr] items-center gap-3 max-w-[90%] rounded-lg p-4 bg-primary text-black",
+      "grid justify-self-end grid-cols-[auto_1fr] items-center gap-3 max-w-[90%] rounded-lg p-4 bg-primary text-secondary",
       { "bg-red-500": error },
       { "opacity-25": cancelled }
     )}
