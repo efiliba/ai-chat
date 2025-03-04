@@ -2,8 +2,6 @@ import { ReactNode } from "react";
 import type { Metadata } from "next";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui";
-import { SidebarPanel } from "@/components/SidebarPanel";
 
 import "./globals.css";
 
@@ -24,11 +22,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider defaultOpen={false}>
-            <SidebarPanel />
-            <SidebarTrigger className="sticky top-0 cursor-pointer" />
-            <SidebarInset>{children}</SidebarInset>
-          </SidebarProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>

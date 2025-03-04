@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useReducer, useRef } from "react";
+import { useMemo, useEffect, useReducer, useRef } from "react";
 
 import { historyReducer, HistoryActionCreator } from "@/reducers";
 import { streamToAsyncGenerator } from "@/utils";
@@ -17,10 +17,20 @@ export const useAI = (
   const [state, dispatch] = useReducer(historyReducer, {
     loading: false,
     error: false,
+    chatStarted: undefined,
     reasoning: "",
     answer: "",
     history: initialHistory,
   });
+
+  useEffect(() => {
+    dispatch(HistoryActionCreator.setHistory(initialHistory));
+    if (state.chatStarted !== undefined) {
+      console.log("CHECK chat starting", initialHistory.length);
+
+      dispatch(HistoryActionCreator.chatStarted(initialHistory.length > 0));
+    }
+  }, [initialHistory, state.chatStarted]);
 
   const controller = useRef<AbortController>(null);
 
@@ -93,6 +103,10 @@ export const useAI = (
     }
 
     dispatch(HistoryActionCreator.setLoading(false));
+
+    if (state.history.length === 0) {
+      dispatch(HistoryActionCreator.chatStarted(true));
+    }
   };
 
   return {

@@ -1,8 +1,4 @@
-"use client";
-
-import { MessageSquareX } from "lucide-react";
-
-import { clearChatAction } from "@/server";
+import { MenuItem } from "@/types";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   Sidebar,
@@ -17,11 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui";
 
-const handleClearChat = () => {
-  clearChatAction("1");
-};
-
-export const SidebarPanel = () => (
+export const SidebarPanel = ({ menuItems }: { menuItems: MenuItem[] }) => (
   <Sidebar>
     <SidebarHeader />
     <SidebarContent>
@@ -35,22 +27,29 @@ export const SidebarPanel = () => (
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
-      <SidebarGroup>
-        <SidebarGroupLabel>Application</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                className="cursor-pointer"
-                onClick={handleClearChat}
-              >
-                <MessageSquareX />
-                <span>Delete Current Chat History</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+      {menuItems.map(({ label, items }, index) => (
+        <SidebarGroup key={index}>
+          <SidebarGroupLabel>{label}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map(
+                ({ icon, label, disable, serverAction }, itemIndex) => (
+                  <SidebarMenuItem key={itemIndex}>
+                    <SidebarMenuButton
+                      className="cursor-pointer"
+                      disabled={disable}
+                      onClick={serverAction}
+                    >
+                      {icon}
+                      <span>{label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      ))}
     </SidebarContent>
     <SidebarFooter />
   </Sidebar>
