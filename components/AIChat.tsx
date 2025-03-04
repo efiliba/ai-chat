@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
-import { redirect } from "next/navigation";
+import { useRef, useState, useCallback } from "react";
 
 import { Message } from "@/types";
 import { useAI } from "@/hooks";
@@ -20,32 +19,17 @@ export const AIChat = ({
 
   const [hideReasoning, setHideReasoning] = useState(false);
 
-  const {
-    ask,
-    loading,
-    error,
-    chatStarted,
-    reasoning,
-    answer,
-    history,
-    abort,
-  } = useAI(id, initialHistory, "<think>", "</think>");
-
-  useEffect(() => {
-    console.log("chatStarted", chatStarted);
-    if (chatStarted) {
-      console.log("STARTED - redirect ???");
-
-      //   redirect("/");
-    }
-  }, [chatStarted]);
+  const { ask, loading, error, reasoning, answer, history, abort } = useAI(
+    id,
+    initialHistory,
+    "<think>",
+    "</think>"
+  );
 
   const handleLoadAIResponse = useCallback(
     (question: string) => {
       scrollAnchorRef.current?.scrollIntoView();
       ask(question);
-      // console.log("asked - enable menu item - count length", history.length);
-      // redirect("/");
     },
     [ask]
   );

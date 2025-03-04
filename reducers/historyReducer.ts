@@ -6,7 +6,6 @@ const ActionType = {
   SET_HISTORY: "SET_HISTORY",
   SET_LAST_QUESTION_ERRORED: "SET_LAST_QUESTION_ERRORED",
   SET_LAST_QUESTION_CANCELLED: "SET_LAST_QUESTION_CANCELLED",
-  CHAT_STARTED: "CHAT_STARTED",
   ADD_QUESTION: "ADD_QUESTION",
   MOVE_RESPONSE: "MOVE_RESPONSE",
   MOVE_CANCELLED_RESPONSE: "MOVE_CANCELLED_RESPONSE",
@@ -34,10 +33,6 @@ export const HistoryActionCreator = {
   setLastQuestionCancelled: () => ({
     type: ActionType.SET_LAST_QUESTION_CANCELLED,
   }),
-  chatStarted: (payload: boolean) => ({
-    type: ActionType.CHAT_STARTED,
-    payload,
-  }),
   addQuestion: (payload: string) => ({
     type: ActionType.ADD_QUESTION,
     payload,
@@ -62,7 +57,6 @@ export const HistoryActionCreator = {
 type State = {
   loading: boolean;
   error: boolean;
-  chatStarted?: boolean;
   history: Message[];
   reasoning: string;
   answer: string;
@@ -86,10 +80,6 @@ type Action =
     }
   | {
       type: typeof ActionType.SET_LAST_QUESTION_CANCELLED;
-    }
-  | {
-      type: typeof ActionType.CHAT_STARTED;
-      payload: boolean;
     }
   | {
       type: typeof ActionType.ADD_QUESTION;
@@ -152,11 +142,6 @@ export const historyReducer = (state: State, action: Action) => {
         }),
       };
     }
-    case ActionType.CHAT_STARTED:
-      return {
-        ...state,
-        chatStarted: action.payload,
-      };
     case ActionType.ADD_QUESTION:
       return {
         ...state,

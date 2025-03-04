@@ -18,7 +18,6 @@ export default async function Home() {
         {
           icon: <MessageSquareX />,
           label: "Delete Chat History",
-          disable: initialHistory.length === 0,
           serverAction: async () => {
             "use server";
 
@@ -30,14 +29,8 @@ export default async function Home() {
     },
   ];
 
-  // console.log("initialHistory", initialHistory.length);
-  // console.log(
-  //   "sidebarMenuItems disable:",
-  //   sidebarMenuItems[0].items[0].disable
-  // );
-
   return (
-    <SidebarProvider defaultOpen={!false}>
+    <SidebarProvider defaultOpen={false}>
       <SidebarPanel menuItems={sidebarMenuItems} />
       <SidebarTrigger className="sticky top-0 cursor-pointer" />
       <SidebarInset>

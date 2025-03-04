@@ -5,7 +5,6 @@ export type MenuItem = {
   items: {
     icon: JSX.Element;
     label: string;
-    disable: boolean;
     serverAction: () => void;
   }[];
 };
