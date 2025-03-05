@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { type Message } from "@/types";
 import { UserQuestion } from "@/components/UserQuestion";
 import { AIResponse } from "@/components/AIResponse";
@@ -7,7 +8,7 @@ interface Props {
   hideReasoning: boolean;
 }
 
-export const ChatHistory = ({ history, hideReasoning }: Props) =>
+export const ChatHistory = memo(({ history, hideReasoning }: Props) =>
   history.map(({ error, cancelled, role, content }, index) =>
     role === "user" ? (
       <UserQuestion
@@ -26,4 +27,7 @@ export const ChatHistory = ({ history, hideReasoning }: Props) =>
         hideReasoning={hideReasoning}
       />
     )
-  );
+  )
+);
+
+ChatHistory.displayName = "ChatHistory";
