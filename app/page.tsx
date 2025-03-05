@@ -1,5 +1,6 @@
-import { MessageSquareX } from "lucide-react";
+import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { MessageSquareX } from "lucide-react";
 
 import { chatHistoryAction, clearChatAction } from "@/server";
 import { SidebarPanel } from "@/components/SidebarPanel";
@@ -7,6 +8,9 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui";
 import { AIChat } from "@/components/AIChat";
 
 export default async function Home() {
+  const cookieStore = await cookies();
+  const open = cookieStore.get("sidebar_state")?.value === "true";
+
   const id = "1";
 
   const initialHistory = await chatHistoryAction(id);
@@ -18,6 +22,7 @@ export default async function Home() {
         {
           icon: <MessageSquareX />,
           label: "Delete Chat History",
+          disable: initialHistory.length === 0,
           serverAction: async () => {
             "use server";
 
@@ -30,7 +35,7 @@ export default async function Home() {
   ];
 
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={open}>
       <SidebarPanel menuItems={sidebarMenuItems} />
       <SidebarTrigger className="sticky top-0 cursor-pointer" />
       <SidebarInset>

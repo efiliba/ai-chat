@@ -32,17 +32,20 @@ export const SidebarPanel = ({ menuItems }: { menuItems: MenuItem[] }) => (
           <SidebarGroupLabel>{label}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map(({ icon, label, serverAction }, itemIndex) => (
-                <SidebarMenuItem key={itemIndex}>
-                  <SidebarMenuButton
-                    className="cursor-pointer"
-                    onClick={serverAction}
-                  >
-                    {icon}
-                    <span>{label}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map(
+                ({ icon, label, disable, serverAction }, itemIndex) => (
+                  <SidebarMenuItem key={itemIndex}>
+                    <SidebarMenuButton
+                      className="cursor-pointer"
+                      disabled={disable}
+                      onClick={serverAction}
+                    >
+                      {icon}
+                      <span>{label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

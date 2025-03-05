@@ -1,9 +1,10 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
+import { redirect } from "next/navigation";
 
 import { Message } from "@/types";
-import { useAI } from "@/hooks";
+import { useEffectWhenToggledOn, useAI } from "@/hooks";
 import { QuestionInput } from "@/components/QuestionInput";
 import { AIResponse } from "@/components/AIResponse";
 import { ChatHistory } from "@/components/ChatHistory";
@@ -19,12 +20,18 @@ export const AIChat = ({
 
   const [hideReasoning, setHideReasoning] = useState(false);
 
-  const { ask, loading, error, reasoning, answer, history, abort } = useAI(
-    id,
-    initialHistory,
-    "<think>",
-    "</think>"
-  );
+  const {
+    ask,
+    loading,
+    error,
+    chatStarted,
+    reasoning,
+    answer,
+    history,
+    abort,
+  } = useAI(id, initialHistory, "<think>", "</think>");
+
+  useEffectWhenToggledOn(() => redirect("/"), chatStarted);
 
   const handleLoadAIResponse = useCallback(
     (question: string) => {

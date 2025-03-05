@@ -17,6 +17,7 @@ export const useAI = (
   const [state, dispatch] = useReducer(historyReducer, {
     loading: false,
     error: false,
+    chatStarted: initialHistory.length > 0,
     reasoning: "",
     answer: "",
     history: initialHistory,
@@ -24,6 +25,7 @@ export const useAI = (
 
   useEffect(() => {
     dispatch(HistoryActionCreator.setHistory(initialHistory));
+    dispatch(HistoryActionCreator.chatStarted(initialHistory.length > 0));
   }, [initialHistory]);
 
   const controller = useRef<AbortController>(null);
@@ -97,6 +99,10 @@ export const useAI = (
     }
 
     dispatch(HistoryActionCreator.setLoading(false));
+
+    if (state.history.length === 0) {
+      dispatch(HistoryActionCreator.chatStarted(true));
+    }
   };
 
   return {
