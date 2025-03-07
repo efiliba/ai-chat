@@ -48,12 +48,6 @@ export async function POST(request: NextRequest) {
 
   const history = await chatHistoryAction(id);
 
-  const createdChat = await prisma.chat.upsert({
-    where: { id },
-    create: { id },
-    update: {},
-  });
-
   // console.log("createdChat", createdChat);
   // https://54.206.225.110:11434/api/chat
   const response = await fetch("http://127.0.0.1:11434/api/chat", {
