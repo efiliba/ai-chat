@@ -57,20 +57,20 @@ export const QuestionInput = memo(
     return (
       <form
         className={cn(
-          "p-4 bg-gray-800 border-t border-gray-700 grid grid-cols-[1fr_auto] gap-x-2 container mx-auto max-w-4xl relative",
+          "p-4 bg-secondary border rounded-lg border-primary/30 grid grid-cols-[1fr_auto] gap-x-2 container mx-auto max-w-4xl relative",
           className
         )}
         onSubmit={handleSubmit}
       >
         <Input
           ref={inputRef}
-          className="pl-10 text-gray-100 bg-gray-900 border-gray-700"
+          className="pl-10 border-primary/20"
           value={input}
           disabled={loading}
           placeholder="Ask the AI a question"
           onChange={handleSetInput}
         />
-        <MessageSquare className="absolute w-4 text-gray-400 -translate-y-1/2 left-6 top-1/2" />
+        <MessageSquare className="absolute w-4 -translate-y-1/2 left-6 top-1/2" />
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>

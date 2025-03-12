@@ -36,7 +36,10 @@ export default async function Home() {
 
   return (
     <SidebarProvider defaultOpen={open}>
-      <SidebarPanel menuItems={sidebarMenuItems} />
+      <SidebarPanel
+        className="shadow-lg shadow-primary"
+        menuItems={sidebarMenuItems}
+      />
       <SidebarTrigger className="sticky top-0 cursor-pointer" />
       <SidebarInset>
         <AIChat id={id} initialHistory={initialHistory} />

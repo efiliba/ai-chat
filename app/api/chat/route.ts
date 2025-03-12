@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "deepseek-r1",
+      model: "deepseek-r1:1.5b",
       streaming: true,
       messages: [
         {

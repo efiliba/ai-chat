@@ -36,8 +36,8 @@ export const AIAnswer = ({
   return (
     <div
       className={classNames(
-        "max-w-[90%] rounded-lg p-4 bg-gray-800 text-gray-100",
-        { "opacity-25": cancelled }
+        "max-w-[90%] rounded-lg p-4 bg-secondary border-t-1 shadow-xs shadow-primary",
+        { "opacity-50": cancelled }
       )}
     >
       <Collapsible
@@ -70,13 +70,13 @@ export const AIAnswer = ({
             </>
           )}
         </CollapsibleTrigger>
-        <CollapsibleContent className="prose col-span-full max-w-none prose-invert prose-p:text-gray-100 prose-headings:text-gray-100 prose-strong:text-gray-100 prose-li:text-gray-100">
-          <Markdown className="py-1 pl-2 mb-2 font-sans text-sm italic text-gray-300 border-l-2 border-gray-600">
+        <CollapsibleContent className="prose dark:prose-invert col-span-full">
+          <Markdown className="py-1 pl-2 mb-2 font-sans text-sm italic border-l border-primary/25">
             {reasoning}
           </Markdown>
         </CollapsibleContent>
       </Collapsible>
-      <article className="prose max-w-none prose-invert prose-p:text-gray-100 prose-headings:text-gray-100 prose-strong:text-gray-100 prose-li:text-gray-100">
+      <article className="prose dark:prose-invert">
         <Markdown className="pt-0">{answer}</Markdown>
       </article>
     </div>

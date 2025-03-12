@@ -31,7 +31,11 @@ export const AIChat = ({
     abort,
   } = useAI(id, initialHistory, "<think>", "</think>");
 
-  useEffectWhenToggledOn(() => redirect("/"), chatStarted);
+  useEffectWhenToggledOn(() => {
+    if (!error) {
+      redirect("/");
+    }
+  }, chatStarted);
 
   const handleLoadAIResponse = useCallback(
     (question: string) => {

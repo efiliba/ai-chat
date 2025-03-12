@@ -13,7 +13,7 @@ interface Props {
 }
 
 const AIError = ({ error }: { error: string }) => (
-  <div className="rounded-lg p-4 bg-red-700 text-gray-100 grid grid-cols-[auto_auto_1fr] items-center gap-3">
+  <div className="max-w-[90%] rounded-lg p-4 bg-red-700 text-gray-100 grid grid-cols-[auto_auto_1fr] items-center gap-3">
     <CircleAlert className="w-4 h-4" />
     <div className="text-sm font-medium">Error</div>
     <div className="col-span-3">{error}</div>
@@ -21,7 +21,7 @@ const AIError = ({ error }: { error: string }) => (
 );
 
 const AILoading = () => (
-  <div className="max-w-[90%] rounded-lg p-4 bg-gray-800 text-gray-100 grid grid-cols-[auto_auto_1fr_auto] items-center gap-3">
+  <div className="max-w-[90%] rounded-lg p-4 grid grid-cols-[auto_auto_1fr_auto] items-center gap-3">
     <CloudCog className="w-4 h-4" />
     <div className="text-sm font-medium">&rdquo;AI&rdquo;</div>
     <div className="text-xs italic justify-self-end">Loading...</div>

@@ -11,16 +11,20 @@ interface Props {
 export const UserQuestion = memo(({ error, cancelled, text }: Props) => (
   <div
     className={classNames(
-      "grid justify-self-end grid-cols-[auto_1fr] items-center gap-3 max-w-[90%] rounded-lg p-4 bg-primary text-secondary",
-      { "bg-red-500": error },
-      { "opacity-25": cancelled }
+      "max-w-[90%] grid justify-self-end grid-cols-[auto_1fr] items-center gap-3 rounded-lg p-4 bg-primary",
+      {
+        "bg-red-700": error,
+        "text-secondary": !error,
+        "text-gray-100": error,
+        "opacity-50": cancelled,
+      }
     )}
   >
     <UserRound className="w-4 h-4" />
     <div className="text-sm font-medium">{`"You"${
       cancelled ? " - cancelled" : ""
     }`}</div>
-    <article className="font-serif col-span-full selection:bg-amber-200 selection:text-amber-950">
+    <article className={classNames("col-span-full", { "font-serif": !error })}>
       {text}
     </article>
   </div>

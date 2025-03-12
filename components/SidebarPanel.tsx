@@ -13,8 +13,14 @@ import {
   SidebarMenuItem,
 } from "@/components/ui";
 
-export const SidebarPanel = ({ menuItems }: { menuItems: MenuItem[] }) => (
-  <Sidebar>
+export const SidebarPanel = ({
+  className,
+  menuItems,
+}: {
+  className?: string;
+  menuItems: MenuItem[];
+}) => (
+  <Sidebar className={className}>
     <SidebarHeader />
     <SidebarContent>
       <SidebarGroup>
