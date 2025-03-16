@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import type { Metadata } from "next";
 
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { Theme } from "@/components/Theme";
 
 import "./globals.css";
 
@@ -10,11 +10,14 @@ export const metadata: Metadata = {
   description: "Local DeepSeek-R1 Chat App",
 };
 
+// Get theme colours from db
+const background = "purple";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       {/* <head>
         <script
           crossOrigin="anonymous"
@@ -22,14 +25,15 @@ export default function RootLayout({
         />
       </head> */}
       <body>
-        <ThemeProvider
+        <Theme
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          background={background}
         >
           {children}
-        </ThemeProvider>
+        </Theme>
       </body>
     </html>
   );
