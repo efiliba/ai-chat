@@ -6,16 +6,13 @@ import { type HslColor, HslColorPicker } from "react-colorful";
 import { ColorContext } from "@/store/ColorContext";
 
 export const ColorPicker = () => {
-  const context = use(ColorContext);
+  const { colors, setColors } = use(ColorContext);
 
   const handleColorChange = (hsl: HslColor) => {
-    context.setColors({ background: hsl });
+    setColors({ background: hsl });
   };
 
   return (
-    <HslColorPicker
-      color={context.colors.background}
-      onChange={handleColorChange}
-    />
+    <HslColorPicker color={colors.background} onChange={handleColorChange} />
   );
 };

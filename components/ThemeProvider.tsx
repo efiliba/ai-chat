@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import Color from "colorjs.io";
 
 import { type ColorVariables, ColorContext } from "@/store/ColorContext";
-import { type HslColor } from "react-colorful";
 
-// Use '_' separator for Tailwind
-const hslToString = ({ h, s, l }: HslColor, separator = " ") =>
-  `${h}${separator}${s}%${separator}${l}%`;
+const hslToString = ({ h, s, l }: { h: number; s: number; l: number }) =>
+  new Color(new Color(Color.spaces.hsl, [h, s, l]))
+    .to(Color.spaces.oklch)
+    .display();
 
 export const ThemeProvider = ({
   children,
@@ -21,9 +22,8 @@ export const ThemeProvider = ({
   return (
     <NextThemesProvider {...props}>
       <ColorContext value={{ colors, setColors }}>
-        <div
-          style={{ "--background": `hsl(${hslToString(colors.background)})` }}
-        >
+        {/* @ts-ignore */}
+        <div style={{ "--background": hslToString(colors.background) }}>
           {children}
         </div>
       </ColorContext>
