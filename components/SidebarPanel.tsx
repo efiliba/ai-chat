@@ -39,16 +39,21 @@ export const SidebarPanel = ({
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map(
-                ({ icon, label, disable, serverAction }, itemIndex) => (
+                (
+                  { icon, label, component, disable, serverAction },
+                  itemIndex
+                ) => (
                   <SidebarMenuItem key={itemIndex}>
-                    <SidebarMenuButton
-                      className="cursor-pointer"
-                      disabled={disable}
-                      onClick={serverAction}
-                    >
-                      {icon}
-                      <span>{label}</span>
-                    </SidebarMenuButton>
+                    {component ?? (
+                      <SidebarMenuButton
+                        className="cursor-pointer"
+                        disabled={disable}
+                        onClick={serverAction}
+                      >
+                        {icon}
+                        <span>{label}</span>
+                      </SidebarMenuButton>
+                    )}
                   </SidebarMenuItem>
                 )
               )}

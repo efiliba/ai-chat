@@ -5,6 +5,7 @@ import { MessageSquareX } from "lucide-react";
 import { chatHistoryAction, clearChatAction } from "@/server";
 import { SidebarPanel } from "@/components/SidebarPanel";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui";
+import { ColorPicker } from "@/components/ColorPicker";
 import { AIChat } from "@/components/AIChat";
 
 export default async function Home() {
@@ -29,6 +30,9 @@ export default async function Home() {
             await clearChatAction(id);
             revalidatePath("/");
           },
+        },
+        {
+          component: <ColorPicker />,
         },
       ],
     },
