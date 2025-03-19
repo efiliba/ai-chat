@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { UserRound } from "lucide-react";
-import classNames from "classnames";
+
+import { cn } from "@/lib/utils";
 
 interface Props {
   error?: boolean;
@@ -10,7 +11,7 @@ interface Props {
 
 export const UserQuestion = memo(({ error, cancelled, text }: Props) => (
   <div
-    className={classNames(
+    className={cn(
       "max-w-[90%] grid justify-self-end grid-cols-[auto_1fr] items-center gap-3 rounded-lg p-4 bg-primary text-primary-foreground",
       {
         "bg-red-700": error,
@@ -23,7 +24,7 @@ export const UserQuestion = memo(({ error, cancelled, text }: Props) => (
     <div className="text-sm font-medium">{`"You"${
       cancelled ? " - cancelled" : ""
     }`}</div>
-    <article className={classNames("col-span-full", { "font-serif": !error })}>
+    <article className={cn("col-span-full", { "font-serif": !error })}>
       {text}
     </article>
   </div>

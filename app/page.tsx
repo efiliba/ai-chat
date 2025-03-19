@@ -32,7 +32,10 @@ export default async function Home() {
           },
         },
         {
-          component: <ColorPicker />,
+          component: <ColorPicker variable="--background" />,
+        },
+        {
+          component: <ColorPicker variable="--foreground" />,
         },
       ],
     },

@@ -1,18 +1,21 @@
 "use client";
 
 import { use } from "react";
-import { type HslColor, HslColorPicker } from "react-colorful";
+import { type RgbColor, RgbColorPicker } from "react-colorful";
 
-import { ColorContext } from "@/store/ColorContext";
+import { type ColorVariables, ColorContext } from "@/store/ColorContext";
 
-export const ColorPicker = () => {
+export const ColorPicker = ({ variable }: { variable: string }) => {
   const { colors, setColors } = use(ColorContext);
 
-  const handleColorChange = (hsl: HslColor) => {
-    setColors({ background: hsl });
+  const handleColorChange = (color: RgbColor) => {
+    setColors((variables: ColorVariables) => ({
+      ...variables,
+      [variable]: color,
+    }));
   };
 
   return (
-    <HslColorPicker color={colors.background} onChange={handleColorChange} />
+    <RgbColorPicker color={colors[variable]} onChange={handleColorChange} />
   );
 };

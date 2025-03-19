@@ -1,32 +1,52 @@
 "use client";
 
-import { useState } from "react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import Color from "colorjs.io";
+import { ReactNode, useState } from "react";
+import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 
+import { mapColors, switchKeys } from "@/utils";
 import { type ColorVariables, ColorContext } from "@/store/ColorContext";
 
-const hslToString = ({ h, s, l }: { h: number; s: number; l: number }) =>
-  new Color(new Color(Color.spaces.hsl, [h, s, l]))
-    .to(Color.spaces.oklch)
-    .display();
+const swopVariables = {
+  "--background": "--foreground",
+  "--primary": "--secondary",
+  "--primary-foreground": "--secondary-foreground",
+};
+
+const mapColorsByTheme = (colors: ColorVariables, theme?: string) => {
+  let mapped = mapColors(colors);
+
+  if (theme === "dark") {
+    return Object.entries(swopVariables).reduce((acc, [key1, key2]) => {
+      mapped = switchKeys(mapped, key1, key2);
+      return {
+        ...acc,
+        ...mapped,
+      };
+    }, {});
+  }
+
+  return mapped;
+};
+
+const ColorProvider = ({ children }: { children: ReactNode }) => {
+  const { resolvedTheme } = useTheme();
+
+  const [colors, setColors] = useState<ColorVariables>({});
+
+  return (
+    <ColorContext value={{ colors, setColors }}>
+      <div style={mapColorsByTheme(colors, resolvedTheme)}>{children}</div>
+    </ColorContext>
+  );
+};
 
 export const ThemeProvider = ({
   children,
   ...props
 }: React.ComponentProps<typeof NextThemesProvider>) => {
-  const [colors, setColors] = useState<ColorVariables>({
-    background: { h: 0, s: 50, l: 50 },
-  });
-
   return (
     <NextThemesProvider {...props}>
-      <ColorContext value={{ colors, setColors }}>
-        {/* @ts-ignore */}
-        <div style={{ "--background": hslToString(colors.background) }}>
-          {children}
-        </div>
-      </ColorContext>
+      <ColorProvider>{children}</ColorProvider>
     </NextThemesProvider>
   );
 };

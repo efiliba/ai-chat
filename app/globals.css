@@ -130,34 +130,6 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply antialiased bg-background text-foreground;
-  }
-}
-
-@layer components {
-  .typography {
-    p {
-      font-size: var(--text-base);
-      color: var(--color-gray-700);
-    }
-    h1 {
-      font-size: var(--text-2xl--line-height);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-gray-950);
-    }
-    h2 {
-      font-size: var(--text-xl);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-gray-950);
-    }
-  }
-}
-
 @keyframes slideUp {
 	from {
 		height: var(--radix-collapsible-content-height);
@@ -174,13 +146,4 @@
 	to {
 		height: var(--radix-collapsible-content-height);
 	}
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }

@@ -1,17 +1,14 @@
-import { createContext } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 
-import { type HslColor } from "react-colorful";
-
-export type ColorVariables = {
-  background: HslColor;
-};
+export type ColorVariables = Record<
+  string,
+  { r: number; g: number; b: number }
+>;
 
 export const ColorContext = createContext<{
   colors: ColorVariables;
-  setColors: ({ background }: { background: HslColor }) => void;
+  setColors: Dispatch<SetStateAction<ColorVariables>>;
 }>({
-  colors: {
-    background: { h: 0, s: 0, l: 0 },
-  },
-  setColors: () => {},
+  colors: {},
+  setColors: () => ({}),
 });

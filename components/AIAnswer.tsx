@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Bot, Loader2, ArrowUpToLine, ArrowDownToLine } from "lucide-react";
 import Markdown from "react-markdown";
-import classNames from "classnames";
 
+import { cn } from "@/lib/utils";
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -35,8 +35,8 @@ export const AIAnswer = ({
 
   return (
     <div
-      className={classNames(
-        "max-w-[90%] rounded-lg p-4 bg-secondary border-t-1 shadow-xs shadow-primary",
+      className={cn(
+        "max-w-[90%] rounded-lg p-4 bg-secondary border-t-1 shadow-sm shadow-primary text-secondary-foreground",
         { "opacity-50": cancelled }
       )}
     >
@@ -70,13 +70,13 @@ export const AIAnswer = ({
             </>
           )}
         </CollapsibleTrigger>
-        <CollapsibleContent className="prose dark:prose-invert col-span-full">
+        <CollapsibleContent className="prose dark:prose-invert col-span-full text-current">
           <Markdown className="py-1 pl-2 mb-2 font-sans text-sm italic border-l border-primary/25">
             {reasoning}
           </Markdown>
         </CollapsibleContent>
       </Collapsible>
-      <article className="prose dark:prose-invert">
+      <article className="prose dark:prose-invert text-current">
         <Markdown className="pt-0">{answer}</Markdown>
       </article>
     </div>
