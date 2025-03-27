@@ -1,4 +1,6 @@
-import pg, { type PoolConfig } from "pg";
+import pg, { type PoolConfig, type Pool } from "pg";
+
+export { type Pool as PoolType };
 
 export const createPool = () => {
   const postgresOptions: PoolConfig = {

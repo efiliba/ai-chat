@@ -1,42 +1,38 @@
+import path from "node:path";
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
-import path from "node:path";
 import { MarkdownTextSplitter } from "langchain/text_splitter";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { type Document } from "langchain/document";
-import {
-  OllamaEmbeddings,
-  type OllamaEmbeddingsParams,
-} from "@langchain/ollama";
+import { OllamaEmbeddings } from "@langchain/ollama";
 import {
   PGVectorStore,
   type PGVectorStoreArgs,
 } from "@langchain/community/vectorstores/pgvector";
-import { type Pool as PoolType } from "pg";
 
-import { createPool } from "../lib/postgres.ts";
+import { createPool, type PoolType } from "../lib/postgres.ts";
 
-const loadDocuments = async (documentsPath: string) => {
+const loadDocuments = (documentsPath: string) => {
   const loader = new DirectoryLoader(path.join(process.cwd(), documentsPath), {
     // ".md": (filePath) => new TextLoader(filePath),
     // ".mdx": (filePath) => new TextLoader(filePath),
-    ".pdf": (path) => new PDFLoader(path),
+    ".pdf": (filePath) => new PDFLoader(filePath),
   });
 
-  return await loader.load();
+  return loader.load();
 };
 
-const SplitPDFDocuments = async (documents: Document[]) => {
+const splitPDFDocuments = (documents: Document[]) => {
   const pdfSplitter = new RecursiveCharacterTextSplitter({
     chunkSize: 1000,
     chunkOverlap: 200,
   });
 
-  return await pdfSplitter.splitDocuments(documents);
+  return pdfSplitter.splitDocuments(documents);
 };
 
-const SplitMarkdownDocuments = async (documents: Document[]) => {
+const splitMarkdownDocuments = (documents: Document[]) => {
   // for each document remove the frontmatter
   documents.forEach((document) => {
     document.pageContent = document.pageContent.replace(/---[\s\S]*?---/, "");
@@ -60,32 +56,21 @@ const SplitMarkdownDocuments = async (documents: Document[]) => {
     "\n", // line breaks
   ];
 
-  return await markdownSplitter.splitDocuments(documents);
+  return markdownSplitter.splitDocuments(documents);
 };
 
-const getEmbeddingModel = () => {
-  const options: OllamaEmbeddingsParams = {
-    // https://ollama.com/library/nomic-embed-text
-    model: "nomic-embed-text:latest",
-    //model: 'deepseek-r1:1.5b',
-    baseUrl: "http://localhost:11434",
-  };
-
-  return new OllamaEmbeddings(options);
-};
-
-const processChunks = async (chunks: Document[]) => {
-  const embeddingModel = getEmbeddingModel();
-  const chunksContent = chunks.map((chunk) => chunk.pageContent);
-  return await embeddingModel.embedDocuments(chunksContent);
-};
-
-const storeVectors = async (
-  vectors: number[][],
-  chunks: Document[],
-  pgPool: PoolType
+const generateEmbeddings = (
+  embeddingModel: OllamaEmbeddings,
+  chunks: Document[]
 ) => {
-  const embeddings = getEmbeddingModel();
+  const chunksContent = chunks.map(({ pageContent }) => pageContent);
+  return embeddingModel.embedDocuments(chunksContent);
+};
+
+const initializeVectorStore = (
+  pgPool: PoolType,
+  embeddingModel: OllamaEmbeddings
+) => {
   const options: PGVectorStoreArgs = {
     pool: pgPool,
     tableName: "vectors",
@@ -95,42 +80,53 @@ const storeVectors = async (
       contentColumnName: "content",
       metadataColumnName: "metadata",
     },
-    // note to self: supported distance strategies: cosine (default),
-    // innerProduct, or euclidean
     distanceStrategy: "cosine",
   };
 
-  const vectorStore = await PGVectorStore.initialize(embeddings, options);
-  await vectorStore.addVectors(vectors, chunks);
-  return vectorStore;
+  return PGVectorStore.initialize(embeddingModel, options);
 };
 
-async function endVectorStorePool(vectorStore: PGVectorStore) {
-  // closes all clients and then releases the pg pool
-  await vectorStore.end();
-}
+const generateDocumentEmbeddings = async (
+  documentsPath: string,
+  embeddingModel: OllamaEmbeddings
+) => {
+  const documents = await loadDocuments(documentsPath);
+  console.log("documents loaded: ", documents.length);
+
+  // const chunks = await splitMarkdownDocuments(documents);
+  const chunks = await splitPDFDocuments(documents);
+  console.log("chunks created: ", chunks.length);
+
+  return {
+    embeddings: await generateEmbeddings(embeddingModel, chunks),
+    chunks,
+  };
+};
 
 const main = async () => {
-  const pgPool = createPool();
-
-  pgPool.on("error", (error) => {
-    console.error("Unexpected error on idle client", error);
-    process.exit(-1);
-  });
+  const documentsPath = "docs";
 
   try {
-    const documentsPath = "docs";
-    const documents = await loadDocuments(documentsPath);
-    console.log("documents loaded: ", documents.length);
-    // const chunks = await SplitMarkdownDocuments(documents);
-    const chunks = await SplitPDFDocuments(documents);
-    console.log("chunks created: ", chunks.length);
-    const embeddings = await processChunks(chunks);
-    console.log("embeddings created: ", embeddings.length);
-    const vectorStore = await storeVectors(embeddings, chunks, pgPool);
-    console.log("vectors stored");
-    await endVectorStorePool(vectorStore);
-    console.log("postgres pool released");
+    const embeddingModel = new OllamaEmbeddings({
+      baseUrl: "http://localhost:11434",
+      model: "deepseek-r1:1.5b",
+    });
+
+    const pgPool = createPool();
+    pgPool.on("error", (error) => {
+      console.error("Unexpected error on idle client", error);
+      process.exit(-1);
+    });
+
+    const [vectorStore, { embeddings, chunks }] = await Promise.all([
+      initializeVectorStore(pgPool, embeddingModel),
+      generateDocumentEmbeddings(documentsPath, embeddingModel),
+    ]);
+    console.log("vector store and embeddings created: ", embeddings.length);
+
+    await vectorStore.addVectors(embeddings, chunks);
+    await vectorStore.end();
+    console.log("vectors added to postgreSQL store");
   } catch (error) {
     console.error("Error: ", error);
   }

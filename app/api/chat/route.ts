@@ -1,10 +1,9 @@
 import { type NextRequest } from "next/server";
 import { createOllama } from "ollama-ai-provider";
-import { type CoreMessage, streamText, embed } from "ai";
+import { embed } from "ai";
 import { PrismaClient } from "@prisma/client";
 
 import { createPool } from "@/lib/postgres";
-
 import { chatHistoryAction } from "@/server";
 import {
   streamToAsyncGenerator,
@@ -14,6 +13,12 @@ import {
 
 // sets max streaming response time to 30 seconds
 export const maxDuration = 30;
+
+type EmbeddingsRow = {
+  content: string;
+  metadata: unknown;
+  vector: number[];
+};
 
 const prisma = new PrismaClient();
 
@@ -50,93 +55,25 @@ const save = async ({
   });
 };
 
-export async function POST2(request: NextRequest) {
-  const { id, question } = await request.json();
-
-  const history = await chatHistoryAction(id);
-
-  // ---------------
+const getEmbedding = async (question: string): Promise<number[]> => {
   const ollamaProvider = createOllama({
     baseURL: "http://localhost:11434/api",
   });
 
-  const ollamaModel = ollamaProvider("deepseek-r1:1.5b");
+  const embeddingModel = ollamaProvider.embedding("deepseek-r1:1.5b");
 
-  // const lastMessage = messages[messages.length - 1].content;
+  try {
+    const result = await embed({
+      model: embeddingModel,
+      value: question,
+    });
 
-  const prompt = `You are a helpful AI chat bot.
-    You should answer the following question: "${question}"\n\n`;
-
-  const result = streamText({
-    model: ollamaModel,
-    prompt: prompt,
-    temperature: 0.1,
-  });
-
-  const response = result.toDataStreamResponse({
-    getErrorMessage: (error) => {
-      const message =
-        error instanceof Error
-          ? error.message
-          : typeof error === "string"
-          ? error
-          : "Unknown error";
-      console.error(message);
-      return message;
-    },
-  });
-
-  console.log("1: ------>", response);
-  return response;
-
-  // ---------------
-
-  // console.log("createdChat", createdChat);
-  // https://54.206.225.110:11434/api/chat
-  // const response = await fetch("http://127.0.0.1:11434/api/chat", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify({
-  //     model: "deepseek-r1",
-  //     streaming: true,
-  //     messages: [
-  //       {
-  //         role: "system",
-  //         content:
-  //           "Keep your answer short, simple, straight forward, consise and avoid rambling, like I am doing here.",
-  //       },
-  //       ...joinReasoningAndAnswer(history),
-  //       { role: "user", content: question },
-  //     ],
-  //   }),
-  // });
-
-  // const reader = response.body!.getReader();
-  // const iterator = streamToAsyncGenerator(
-  //   reader,
-  //   (value) => JSON.parse(value).message.content,
-  //   (answer) => save({ id, question, answer })
-  // );
-
-  // const stream = iteratorToStream(iterator);
-
-  // return new Response(stream);
-}
-
-interface ChatRequest {
-  messages: {
-    role: string;
-    content: string;
-  }[];
-}
-
-interface EmbeddingsRow {
-  content: string;
-  metadata: unknown;
-  vector: number[];
-}
+    return result.embedding;
+  } catch (error) {
+    console.error("Error getting embeddings:", error);
+    throw new Error("Error getting embeddings");
+  }
+};
 
 const findKnowledge = async (question: string) => {
   const pgPool = createPool();
@@ -150,28 +87,26 @@ const findKnowledge = async (question: string) => {
 
     const embeddingString = `[${embedding.map((e) => e.toFixed(6)).join(",")}]`;
 
-    // good old sql :)
     const query = `
-          SELECT content, metadata, vector <=> $1 AS distance
-          FROM vectors
-          ORDER BY distance
-          LIMIT 5
-      `;
+      SELECT content, metadata, vector <=> $1 AS distance
+      FROM vectors
+      ORDER BY distance
+      LIMIT 5
+    `;
 
     const result = await pgPool.query<EmbeddingsRow>(query, [embeddingString]);
 
     if (result.rows.length > 0) {
-      const knowledge = result.rows.map((row) => ({
-        content: row.content,
-        metadata: row.metadata,
+      const knowledge = result.rows.map(({ content, metadata }) => ({
+        content,
+        metadata,
       }));
 
-      const knowledgeContent = knowledge.map((k) => k.content).join(" ");
-
-      return knowledgeContent;
-    } else {
-      return null;
+      // Eli: metadata dropped ??? after extracted
+      return knowledge.map(({ content }) => content).join(" ");
     }
+
+    return null;
   } catch (error) {
     let message = "Error while finding knowledge";
     const errorString =
@@ -187,89 +122,47 @@ const findKnowledge = async (question: string) => {
   }
 };
 
-const getEmbedding = async (question: string): Promise<number[]> => {
-  const ollamaProvider = createOllama({
-    baseURL: "http://localhost:11434/api",
-  });
+export async function POST(request: NextRequest) {
+  const { id, question } = await request.json();
 
-  const embeddingModel = ollamaProvider.embedding("nomic-embed-text:latest");
-  //const embeddingModel = ollamaProvider.embedding('deepseek-r1:1.5b')
+  const [history, knowledge] = await Promise.all([
+    chatHistoryAction(id),
+    findKnowledge(question),
+  ]);
 
-  try {
-    const result = await embed({
-      model: embeddingModel,
-      value: question,
-    });
+  const knowledgePrompt = `You are an employment agent answering questions about your client.
+    Answer truthfuly but show them in the best light possable so that they will be hired.
+    Use the following information: ${knowledge}
+  `;
 
-    return result.embedding;
-  } catch (error) {
-    console.error("Error getting embeddings:", error);
-    throw new Error("Error getting embeddings");
-  }
-};
-
-export async function POST(req: Request) {
-  const body = (await req.json()) as ChatRequest;
-  const messages = body.messages as CoreMessage[];
-
-  console.log("messages", messages.length);
-
-  // debugger;
-  // console.log("body", body);
-  // console.log("messages", messages);
-  // console.log("parts", messages[0].parts);
-  // console.log("<--------------------------------------------->");
-
-  const ollamaProvider = createOllama({
-    baseURL: "http://localhost:11434/api",
-  });
-
-  const ollamaModel = ollamaProvider("deepseek-r1:1.5b");
-
-  const lastMessage = messages[messages.length - 1].content;
-
-  let knowledge = null;
-  try {
-    if (typeof lastMessage !== "string") {
-      throw new Error("Message content must be a string");
-    }
-    knowledge = await findKnowledge(lastMessage);
-  } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "unknown error";
-    return new Response(errorMessage, { status: 500 });
-  }
-
-  let prompt = `You are a helpful AI chat bot.
-                You should answer the following question: "${lastMessage}"\n\n`;
-
-  if (typeof knowledge === "string" && knowledge !== "") {
-    prompt += `When answering you should use the following knowledge:
-    ${knowledge}\n\n`;
-  }
-
-  prompt += 'End every response with the sentence "Happy coding!"';
-
-  const result = streamText({
-    model: ollamaModel,
-    prompt: prompt,
-    temperature: 0.1,
-  });
-
-  const response = result.toDataStreamResponse({
-    getErrorMessage: (error) => {
-      const message =
-        error instanceof Error
-          ? error.message
-          : typeof error === "string"
-          ? error
-          : "Unknown error";
-      console.error(message);
-      return message;
+  // https://54.206.225.110:11434/api/chat
+  const response = await fetch("http://127.0.0.1:11434/api/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      model: "deepseek-r1",
+      streaming: true,
+      messages: [
+        {
+          role: "system",
+          content: knowledgePrompt,
+        },
+        ...joinReasoningAndAnswer(history),
+        { role: "user", content: question },
+      ],
+    }),
   });
 
-  console.log("2: ------>", response);
+  const reader = response.body!.getReader();
+  const iterator = streamToAsyncGenerator(
+    reader,
+    (value) => JSON.parse(value).message.content,
+    (answer) => save({ id, question, answer })
+  );
 
-  return response;
+  const stream = iteratorToStream(iterator);
+
+  return new Response(stream);
 }

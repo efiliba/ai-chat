@@ -2,7 +2,6 @@
 
 import { useRef, useState, useCallback } from "react";
 import { redirect } from "next/navigation";
-import { useChat } from "@ai-sdk/react";
 
 import { Message } from "@/types";
 import { useEffectWhenToggledOn, useAI } from "@/hooks";
@@ -32,13 +31,6 @@ export const AIChat = ({
     abort,
   } = useAI(id, initialHistory, "<think>", "</think>");
 
-  // Move into useAI
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    onError: (error) => {
-      console.error("useChat onError: ", error);
-    },
-  });
-
   useEffectWhenToggledOn(() => {
     if (!error) {
       redirect("/");
@@ -58,32 +50,6 @@ export const AIChat = ({
   const handleToggleReasoning = () => {
     setHideReasoning((toggle) => !toggle);
   };
-
-  return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
-      {messages.map((message) => (
-        <div
-          key={message.id}
-          className="whitespace-pre-wrap"
-          style={{ color: message.role === "user" ? "yellow" : "green" }}
-        >
-          <strong>{`${message.role}: `}</strong>
-          <br />
-          {message.content}
-          <br />
-        </div>
-      ))}
-
-      <form onSubmit={handleSubmit}>
-        <input
-          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl text-black"
-          value={input}
-          placeholder="Say something..."
-          onChange={handleInputChange}
-        />
-      </form>
-    </div>
-  );
 
   return (
     <div className="[&_*:not(.scroll-anchor)]:[overflow-anchor:none] min-h-screen grid grid-rows-[1fr_auto_auto]">
